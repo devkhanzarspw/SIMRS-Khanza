@@ -16,6 +16,7 @@ import bridging.INACBGPerawatanCorona;
 import bridging.InhealthDataSJP;
 import bridging.PCareDataPendaftaran;
 import bridging.SisruteRujukanKeluar;
+import ermrspw.ERMrspw;
 import inventory.DlgResepObat;
 import inventory.DlgPemberianObat;
 import laporan.DlgDiagnosaPenyakit;
@@ -209,6 +210,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
     private int i=0,pilihan=0,sudah=0,jmlparsial=0;
     public DlgKamarInap kamarinap=new DlgKamarInap(null,false);
     private DlgRawatJalan dlgrwjl2=new DlgRawatJalan(null,false);
+    private ERMrspw ermrspw = new ERMrspw();
     private boolean semua;
     private boolean sukses=false;
     private Jurnal jur=new Jurnal();
@@ -701,6 +703,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         ppMasukPoli = new javax.swing.JMenuItem();
         MnKamarInap = new javax.swing.JMenuItem();
         MnTindakanRalan = new javax.swing.JMenu();
+        MnERMrspw = new javax.swing.JMenuItem();
         MnDataRalan = new javax.swing.JMenuItem();
         MnPeriksaLab = new javax.swing.JMenuItem();
         MnPeriksaLabPA = new javax.swing.JMenuItem();
@@ -2590,6 +2593,22 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
         MnTindakanRalan.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         MnTindakanRalan.setName("MnTindakanRalan"); // NOI18N
         MnTindakanRalan.setPreferredSize(new java.awt.Dimension(200, 26));
+
+        MnERMrspw.setBackground(new java.awt.Color(255, 255, 254));
+        MnERMrspw.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
+        MnERMrspw.setForeground(new java.awt.Color(50, 50, 50));
+        MnERMrspw.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/category.png"))); // NOI18N
+        MnERMrspw.setText("Menu Rekam Medis");
+        MnERMrspw.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        MnERMrspw.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        MnERMrspw.setName("MnERMrspw"); // NOI18N
+        MnERMrspw.setPreferredSize(new java.awt.Dimension(220, 26));
+        MnERMrspw.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                MnERMrspwActionPerformed(evt);
+            }
+        });
+        MnTindakanRalan.add(MnERMrspw);
 
         MnDataRalan.setBackground(new java.awt.Color(255, 255, 254));
         MnDataRalan.setFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
@@ -13728,6 +13747,28 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
         }
     }//GEN-LAST:event_MnPenilaianAwalMedisRalanParuActionPerformed
 
+    private void MnERMrspwActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnERMrspwActionPerformed
+        if(tabModekasir.getRowCount()==0){
+            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+            TCari.requestFocus();
+        }else{
+            if(tbKasirRalan.getSelectedRow()!= -1){
+                if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
+                    JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
+                }else {
+//                    ermrspw.isCek();
+//                    ermrspw.emptTeks();
+                    ermrspw.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+                    ermrspw.setLocationRelativeTo(internalFrame1);
+//                    ermrspw.SetPoli(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
+//                    ermrspw.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
+//                    ermrspw.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
+                    ermrspw.setVisible(true);
+                } 
+            }                               
+        }
+    }//GEN-LAST:event_MnERMrspwActionPerformed
+
     /**
     * @param args the command line arguments
     */
@@ -13823,6 +13864,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
     private javax.swing.JMenuItem MnDirujuk;
     private javax.swing.JMenuItem MnDokter;
     private javax.swing.JMenuItem MnDokumentasiTindakanESWL;
+    private javax.swing.JMenuItem MnERMrspw;
     private javax.swing.JMenuItem MnEdukasiPasienKeluarga;
     private javax.swing.JMenuItem MnGabungNoRawat;
     private javax.swing.JMenu MnGanti;

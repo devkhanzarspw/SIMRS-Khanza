@@ -5,6 +5,7 @@
 package ermrspw;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import javax.swing.JFrame;
 
 /**
@@ -35,7 +36,7 @@ public class ERMrspw extends javax.swing.JFrame {
         panelBiasa1 = new widget.PanelBiasa();
         panelBiasa3 = new widget.PanelBiasa();
         internalFrame2 = new widget.InternalFrame();
-        cekBox2 = new widget.CekBox();
+        ChkInput = new widget.CekBox();
         scrollPane1 = new widget.ScrollPane();
         internalFrame3 = new widget.InternalFrame();
         panelBiasa4 = new widget.PanelBiasa();
@@ -68,9 +69,25 @@ public class ERMrspw extends javax.swing.JFrame {
         internalFrame2.setDoubleBuffered(false);
         internalFrame2.setLayout(new java.awt.BorderLayout());
 
-        cekBox2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
-        cekBox2.setText("Riwayat SOAPIE");
-        internalFrame2.add(cekBox2, java.awt.BorderLayout.PAGE_START);
+        ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput.setMnemonic('M');
+        ChkInput.setSelected(true);
+        ChkInput.setText(".: Riwayat S O A P I E");
+        ChkInput.setBorderPainted(true);
+        ChkInput.setBorderPaintedFlat(true);
+        ChkInput.setFocusable(false);
+        ChkInput.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ChkInput.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ChkInput.setPreferredSize(new java.awt.Dimension(192, 20));
+        ChkInput.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkInputActionPerformed(evt);
+            }
+        });
+        internalFrame2.add(ChkInput, java.awt.BorderLayout.PAGE_START);
         internalFrame2.add(scrollPane1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout internalFrame3Layout = new javax.swing.GroupLayout(internalFrame3);
@@ -139,6 +156,10 @@ public class ERMrspw extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInputActionPerformed
+        isForm();
+    }//GEN-LAST:event_ChkInputActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -175,7 +196,7 @@ public class ERMrspw extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private widget.CekBox cekBox2;
+    private widget.CekBox ChkInput;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame2;
     private widget.InternalFrame internalFrame3;
@@ -185,4 +206,19 @@ public class ERMrspw extends javax.swing.JFrame {
     private widget.PanelBiasa panelBiasa4;
     private widget.ScrollPane scrollPane1;
     // End of variables declaration//GEN-END:variables
+    
+    
+    private void isForm(){
+        if(ChkInput.isSelected()==true){
+            ChkInput.setVisible(false);
+            scrollPane1.setPreferredSize(new Dimension(WIDTH,220));
+            scrollPane1.setVisible(true);      
+            ChkInput.setVisible(true);
+        }else if(ChkInput.isSelected()==false){           
+            ChkInput.setVisible(false);            
+            scrollPane1.setPreferredSize(new Dimension(WIDTH,20));
+            scrollPane1.setVisible(false);      
+            ChkInput.setVisible(true);
+        }
+    }
 }
