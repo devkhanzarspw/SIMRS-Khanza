@@ -4,9 +4,23 @@
  */
 package ermrspw;
 
+import fungsi.WarnaTable;
+import fungsi.koneksiDB;
+import fungsi.sekuel;
+import fungsi.validasi;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Window;
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Date;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -14,13 +28,54 @@ import javax.swing.JFrame;
  */
 public class ERMrspw extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ERMrspw
-     */
+     private final DefaultTableModel tabModePembelian;
+    private Connection koneksi=koneksiDB.condb();
+    private sekuel Sequel=new sekuel();
+    private validasi Valid=new validasi();
+    private String aktifkanparsial="no",kode_poli="",kd_pj="";
+    private int i=0, index = 0;
+    private PreparedStatement ps, ps2, ps3, ps4;
+    private ResultSet rs, rs2, rs3, rs4;
+    
+    
+    
     public ERMrspw() {
         initComponents();
         
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        
+        tabModePembelian=new DefaultTableModel(null,new Object[]{
+            "No.","Kode Barang","Nama Barang","Jumlah","Tanggal"}){
+             @Override public boolean isCellEditable(int rowIndex, int colIndex){
+                boolean a = false;
+                if (colIndex==0) {
+                    a=true;
+                }
+                return a;
+             }
+        };
+        tbPembelian.setModel(tabModePembelian);
+        tbPembelian.setPreferredScrollableViewportSize(new Dimension(500,500));
+        tbPembelian.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+        for (i = 0; i < 5; i++) {
+            TableColumn column = tbPembelian.getColumnModel().getColumn(i);
+            if(i==0){
+                column.setPreferredWidth(40);
+            }else if(i==1){
+                column.setPreferredWidth(140);
+            }else if(i==2){
+                column.setPreferredWidth(170);
+            }else if(i==3){
+                column.setPreferredWidth(100);
+            }else if(i==4){
+                column.setPreferredWidth(140);
+            }
+        }
+        tbPembelian.setDefaultRenderer(Object.class, new WarnaTable());
+        
+        tampilPembelianObat();
+//        tesTampilObat();
     }
 
     /**
@@ -34,30 +89,151 @@ public class ERMrspw extends javax.swing.JFrame {
 
         internalFrame1 = new widget.InternalFrame();
         panelBiasa1 = new widget.PanelBiasa();
+        FormInput = new widget.PanelBiasa();
+        jLabel3 = new widget.Label();
+        TNoRw = new widget.TextBox();
+        TNoRM = new widget.TextBox();
+        TPasien = new widget.TextBox();
+        jLabel23 = new widget.Label();
+        DTPTgl = new widget.Tanggal();
+        cmbJam = new widget.ComboBox();
+        cmbMnt = new widget.ComboBox();
+        cmbDtk = new widget.ComboBox();
+        ChkJln = new widget.CekBox();
         panelBiasa3 = new widget.PanelBiasa();
         internalFrame2 = new widget.InternalFrame();
-        ChkInput = new widget.CekBox();
+        jPanel1 = new javax.swing.JPanel();
+        ChkInput1 = new widget.CekBox();
         scrollPane1 = new widget.ScrollPane();
-        internalFrame3 = new widget.InternalFrame();
+        jPanel2 = new javax.swing.JPanel();
+        ChkInput2 = new widget.CekBox();
+        scrollPane2 = new widget.ScrollPane();
+        tbPembelian = new widget.Table();
+        jPanel3 = new javax.swing.JPanel();
+        ChkInput3 = new widget.CekBox();
+        scrollPane3 = new widget.ScrollPane();
+        jPanel4 = new javax.swing.JPanel();
+        ChkInput4 = new widget.CekBox();
+        scrollPane4 = new widget.ScrollPane();
         panelBiasa4 = new widget.PanelBiasa();
         panelBiasa2 = new widget.PanelBiasa();
+        internalFrame3 = new widget.InternalFrame();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder("ERM-Rumah Sakit Putra Waspada"));
         internalFrame1.setLayout(new java.awt.BorderLayout());
 
         panelBiasa1.setPreferredSize(new java.awt.Dimension(1355, 100));
 
+        FormInput.setPreferredSize(new java.awt.Dimension(260, 43));
+        FormInput.setLayout(null);
+
+        jLabel3.setText("No.Rawat :");
+        FormInput.add(jLabel3);
+        jLabel3.setBounds(0, 10, 70, 23);
+
+        TNoRw.setHighlighter(null);
+        TNoRw.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                TNoRwMouseClicked(evt);
+            }
+        });
+        TNoRw.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TNoRwKeyPressed(evt);
+            }
+        });
+        FormInput.add(TNoRw);
+        TNoRw.setBounds(74, 10, 125, 23);
+
+        TNoRM.setEditable(false);
+        TNoRM.setHighlighter(null);
+        FormInput.add(TNoRM);
+        TNoRM.setBounds(201, 10, 80, 23);
+
+        TPasien.setEditable(false);
+        TPasien.setHighlighter(null);
+        TPasien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TPasienActionPerformed(evt);
+            }
+        });
+        FormInput.add(TPasien);
+        TPasien.setBounds(283, 10, 270, 23);
+
+        jLabel23.setText("Tanggal :");
+        FormInput.add(jLabel23);
+        jLabel23.setBounds(554, 10, 60, 23);
+
+        DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-11-2023" }));
+        DTPTgl.setDisplayFormat("dd-MM-yyyy");
+        DTPTgl.setOpaque(false);
+        DTPTgl.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                DTPTglKeyPressed(evt);
+            }
+        });
+        FormInput.add(DTPTgl);
+        DTPTgl.setBounds(617, 10, 90, 23);
+
+        cmbJam.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
+        cmbJam.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbJam.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbJamKeyPressed(evt);
+            }
+        });
+        FormInput.add(cmbJam);
+        cmbJam.setBounds(711, 10, 62, 23);
+
+        cmbMnt.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+        cmbMnt.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbMnt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbMntKeyPressed(evt);
+            }
+        });
+        FormInput.add(cmbMnt);
+        cmbMnt.setBounds(776, 10, 62, 23);
+
+        cmbDtk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+        cmbDtk.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbDtk.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbDtkKeyPressed(evt);
+            }
+        });
+        FormInput.add(cmbDtk);
+        cmbDtk.setBounds(841, 10, 62, 23);
+
+        ChkJln.setBorder(null);
+        ChkJln.setSelected(true);
+        ChkJln.setBorderPainted(true);
+        ChkJln.setBorderPaintedFlat(true);
+        ChkJln.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        ChkJln.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        ChkJln.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        ChkJln.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkJlnActionPerformed(evt);
+            }
+        });
+        FormInput.add(ChkJln);
+        ChkJln.setBounds(906, 10, 23, 23);
+
         javax.swing.GroupLayout panelBiasa1Layout = new javax.swing.GroupLayout(panelBiasa1);
         panelBiasa1.setLayout(panelBiasa1Layout);
         panelBiasa1Layout.setHorizontalGroup(
             panelBiasa1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1461, Short.MAX_VALUE)
+            .addComponent(FormInput, javax.swing.GroupLayout.DEFAULT_SIZE, 1461, Short.MAX_VALUE)
         );
         panelBiasa1Layout.setVerticalGroup(
             panelBiasa1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 98, Short.MAX_VALUE)
+            .addGroup(panelBiasa1Layout.createSequentialGroup()
+                .addComponent(FormInput, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         internalFrame1.add(panelBiasa1, java.awt.BorderLayout.PAGE_START);
@@ -65,56 +241,211 @@ public class ERMrspw extends javax.swing.JFrame {
         panelBiasa3.setBorder(javax.swing.BorderFactory.createTitledBorder("Riwayat Perawatan Pasien"));
         panelBiasa3.setPreferredSize(new java.awt.Dimension(600, 300));
 
-        internalFrame2.setBorder(null);
-        internalFrame2.setDoubleBuffered(false);
-        internalFrame2.setLayout(new java.awt.BorderLayout());
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        ChkInput.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
-        ChkInput.setMnemonic('M');
-        ChkInput.setSelected(true);
-        ChkInput.setText(".: Riwayat S O A P I E");
-        ChkInput.setBorderPainted(true);
-        ChkInput.setBorderPaintedFlat(true);
-        ChkInput.setFocusable(false);
-        ChkInput.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        ChkInput.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        ChkInput.setPreferredSize(new java.awt.Dimension(192, 20));
-        ChkInput.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
-        ChkInput.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
-        ChkInput.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
-        ChkInput.addActionListener(new java.awt.event.ActionListener() {
+        ChkInput1.setBackground(new java.awt.Color(51, 255, 255));
+        ChkInput1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, null, null, null, new java.awt.Color(204, 204, 204)));
+        ChkInput1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput1.setMnemonic('I');
+        ChkInput1.setText(".: Riwayat S O A P I E");
+        ChkInput1.setToolTipText("Alt+I");
+        ChkInput1.setActionCommand(".: Riwayat S O A P I E");
+        ChkInput1.setBorderPainted(true);
+        ChkInput1.setBorderPaintedFlat(true);
+        ChkInput1.setFocusable(false);
+        ChkInput1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        ChkInput1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ChkInput1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ChkInput1.setPreferredSize(new java.awt.Dimension(192, 20));
+        ChkInput1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput1.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ChkInputActionPerformed(evt);
+                ChkInput1ActionPerformed(evt);
             }
         });
-        internalFrame2.add(ChkInput, java.awt.BorderLayout.PAGE_START);
-        internalFrame2.add(scrollPane1, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout internalFrame3Layout = new javax.swing.GroupLayout(internalFrame3);
-        internalFrame3.setLayout(internalFrame3Layout);
-        internalFrame3Layout.setHorizontalGroup(
-            internalFrame3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 588, Short.MAX_VALUE)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(ChkInput1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(scrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
-        internalFrame3Layout.setVerticalGroup(
-            internalFrame3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 211, Short.MAX_VALUE)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(ChkInput1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
+        );
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        ChkInput2.setBackground(new java.awt.Color(51, 255, 255));
+        ChkInput2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, null, null, null, new java.awt.Color(204, 204, 204)));
+        ChkInput2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput2.setMnemonic('I');
+        ChkInput2.setText(".: Riwayat Obat");
+        ChkInput2.setToolTipText("Alt+I");
+        ChkInput2.setBorderPainted(true);
+        ChkInput2.setBorderPaintedFlat(true);
+        ChkInput2.setFocusable(false);
+        ChkInput2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        ChkInput2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ChkInput2.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ChkInput2.setPreferredSize(new java.awt.Dimension(192, 20));
+        ChkInput2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput2.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput2.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkInput2ActionPerformed(evt);
+            }
+        });
+
+        tbPembelian.setToolTipText("Silahkan klik untuk memilih data yang mau diedit ataupun dihapus");
+        tbPembelian.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbPembelianMouseClicked(evt);
+            }
+        });
+        tbPembelian.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbPembelianKeyReleased(evt);
+            }
+        });
+        scrollPane2.setViewportView(tbPembelian);
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(ChkInput2, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .addComponent(scrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(ChkInput2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
+        );
+
+        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+
+        ChkInput3.setBackground(new java.awt.Color(51, 255, 255));
+        ChkInput3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, null, null, null, new java.awt.Color(204, 204, 204)));
+        ChkInput3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput3.setMnemonic('I');
+        ChkInput3.setText(".: Riwayat Perawatan");
+        ChkInput3.setToolTipText("Alt+I");
+        ChkInput3.setBorderPainted(true);
+        ChkInput3.setBorderPaintedFlat(true);
+        ChkInput3.setFocusable(false);
+        ChkInput3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        ChkInput3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ChkInput3.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ChkInput3.setPreferredSize(new java.awt.Dimension(192, 20));
+        ChkInput3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput3.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput3.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkInput3ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(ChkInput3, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .addComponent(scrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(ChkInput3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
+        );
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+
+        ChkInput4.setBackground(new java.awt.Color(51, 255, 255));
+        ChkInput4.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED, null, null, null, new java.awt.Color(204, 204, 204)));
+        ChkInput4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput4.setMnemonic('I');
+        ChkInput4.setText(".: Riwayat S O A P I E");
+        ChkInput4.setToolTipText("Alt+I");
+        ChkInput4.setBorderPainted(true);
+        ChkInput4.setBorderPaintedFlat(true);
+        ChkInput4.setFocusable(false);
+        ChkInput4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        ChkInput4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        ChkInput4.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        ChkInput4.setPreferredSize(new java.awt.Dimension(192, 20));
+        ChkInput4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkInput4.setRolloverSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput4.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/145.png"))); // NOI18N
+        ChkInput4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkInput4ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(ChkInput4, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .addComponent(scrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(ChkInput4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(scrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
+        );
+
+        javax.swing.GroupLayout internalFrame2Layout = new javax.swing.GroupLayout(internalFrame2);
+        internalFrame2.setLayout(internalFrame2Layout);
+        internalFrame2Layout.setHorizontalGroup(
+            internalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        internalFrame2Layout.setVerticalGroup(
+            internalFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(internalFrame2Layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout panelBiasa3Layout = new javax.swing.GroupLayout(panelBiasa3);
         panelBiasa3.setLayout(panelBiasa3Layout);
         panelBiasa3Layout.setHorizontalGroup(
             panelBiasa3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelBiasa3Layout.setVerticalGroup(
             panelBiasa3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelBiasa3Layout.createSequentialGroup()
-                .addComponent(internalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(internalFrame3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 176, Short.MAX_VALUE))
+            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         internalFrame1.add(panelBiasa3, java.awt.BorderLayout.LINE_START);
@@ -130,22 +461,24 @@ public class ERMrspw extends javax.swing.JFrame {
         );
         panelBiasa4Layout.setVerticalGroup(
             panelBiasa4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 608, Short.MAX_VALUE)
+            .addGap(0, 1057, Short.MAX_VALUE)
         );
 
         internalFrame1.add(panelBiasa4, java.awt.BorderLayout.EAST);
 
         panelBiasa2.setBorder(javax.swing.BorderFactory.createTitledBorder("Form ERM"));
 
+        internalFrame3.setLayout(new java.awt.BorderLayout());
+
         javax.swing.GroupLayout panelBiasa2Layout = new javax.swing.GroupLayout(panelBiasa2);
         panelBiasa2.setLayout(panelBiasa2Layout);
         panelBiasa2Layout.setHorizontalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 553, Short.MAX_VALUE)
+            .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelBiasa2Layout.setVerticalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 608, Short.MAX_VALUE)
+            .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         internalFrame1.add(panelBiasa2, java.awt.BorderLayout.CENTER);
@@ -156,9 +489,88 @@ public class ERMrspw extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void ChkInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInputActionPerformed
+    private void TNoRwMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TNoRwMouseClicked
+        Window[] wins = Window.getWindows();
+        for (Window win : wins) {
+            if (win instanceof JDialog) {
+                win.setLocationRelativeTo(internalFrame1);
+                win.toFront();
+            }
+        }
+    }//GEN-LAST:event_TNoRwMouseClicked
+
+    private void TNoRwKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNoRwKeyPressed
+            isRawat();
+            isPsien();
+            kd_pj=Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+            kode_poli=Sequel.cariIsi("select reg_periksa.kd_poli from reg_periksa where reg_periksa.no_rawat=?",TNoRw.getText());
+    }//GEN-LAST:event_TNoRwKeyPressed
+
+    private void TPasienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TPasienActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TPasienActionPerformed
+
+    private void DTPTglKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DTPTglKeyPressed
+//        Valid.pindah(evt,BtnSeekDokter,cmbJam);
+    }//GEN-LAST:event_DTPTglKeyPressed
+
+    private void cmbJamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbJamKeyPressed
+        Valid.pindah(evt,DTPTgl,cmbMnt);
+    }//GEN-LAST:event_cmbJamKeyPressed
+
+    private void cmbMntKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbMntKeyPressed
+        Valid.pindah(evt,cmbJam,cmbDtk);
+    }//GEN-LAST:event_cmbMntKeyPressed
+
+    private void cmbDtkKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbDtkKeyPressed
+//        Valid.pindah(evt,cmbMnt,TCari);
+    }//GEN-LAST:event_cmbDtkKeyPressed
+
+    private void ChkJlnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkJlnActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChkJlnActionPerformed
+
+    private void ChkInput1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInput1ActionPerformed
+        // TODO add your handling code here:
         isForm();
-    }//GEN-LAST:event_ChkInputActionPerformed
+    }//GEN-LAST:event_ChkInput1ActionPerformed
+
+    private void ChkInput2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInput2ActionPerformed
+        // TODO add your handling code here:
+        isForm2();
+    }//GEN-LAST:event_ChkInput2ActionPerformed
+
+    private void ChkInput3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInput3ActionPerformed
+        // TODO add your handling code here:
+        isForm3();
+    }//GEN-LAST:event_ChkInput3ActionPerformed
+
+    private void ChkInput4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkInput4ActionPerformed
+        // TODO add your handling code here:
+        isForm4();
+    }//GEN-LAST:event_ChkInput4ActionPerformed
+
+    private void tbPembelianMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPembelianMouseClicked
+//        if(tabModePembelian.getRowCount()!=0){
+//            try {
+//                getDataObat();
+//            } catch (java.lang.NullPointerException e) {
+//            }
+//
+//        }
+    }//GEN-LAST:event_tbPembelianMouseClicked
+
+    private void tbPembelianKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tbPembelianKeyReleased
+//        if(tabModePembelian.getRowCount()!=0){
+//            if((evt.getKeyCode()==KeyEvent.VK_ENTER)||(evt.getKeyCode()==KeyEvent.VK_UP)||(evt.getKeyCode()==KeyEvent.VK_DOWN)){
+//                try {
+//                    getDataObat();
+//                } catch (java.lang.NullPointerException e) {
+//                }
+//            }
+//
+//        }
+    }//GEN-LAST:event_tbPembelianKeyReleased
 
     /**
      * @param args the command line arguments
@@ -196,29 +608,264 @@ public class ERMrspw extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private widget.CekBox ChkInput;
+    private widget.CekBox ChkInput1;
+    private widget.CekBox ChkInput2;
+    private widget.CekBox ChkInput3;
+    private widget.CekBox ChkInput4;
+    private widget.CekBox ChkJln;
+    private widget.Tanggal DTPTgl;
+    private widget.PanelBiasa FormInput;
+    private widget.TextBox TNoRM;
+    private widget.TextBox TNoRw;
+    private widget.TextBox TPasien;
+    private widget.ComboBox cmbDtk;
+    private widget.ComboBox cmbJam;
+    private widget.ComboBox cmbMnt;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame2;
     private widget.InternalFrame internalFrame3;
+    private widget.Label jLabel23;
+    private widget.Label jLabel3;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private widget.PanelBiasa panelBiasa1;
     private widget.PanelBiasa panelBiasa2;
     private widget.PanelBiasa panelBiasa3;
     private widget.PanelBiasa panelBiasa4;
     private widget.ScrollPane scrollPane1;
+    private widget.ScrollPane scrollPane2;
+    private widget.ScrollPane scrollPane3;
+    private widget.ScrollPane scrollPane4;
+    private widget.Table tbPembelian;
     // End of variables declaration//GEN-END:variables
     
     
     private void isForm(){
-        if(ChkInput.isSelected()==true){
-            ChkInput.setVisible(false);
-            scrollPane1.setPreferredSize(new Dimension(WIDTH,220));
-            scrollPane1.setVisible(true);      
-            ChkInput.setVisible(true);
-        }else if(ChkInput.isSelected()==false){           
-            ChkInput.setVisible(false);            
-            scrollPane1.setPreferredSize(new Dimension(WIDTH,20));
+        if(ChkInput1.isSelected()==true){
+            ChkInput1.setVisible(false);
+            jPanel1.setPreferredSize(new Dimension(WIDTH,282));
+            scrollPane1.setVisible(true);
+            ChkInput1.setVisible(true);
+        }else if(ChkInput1.isSelected()==false){           
+            ChkInput1.setVisible(false);            
+            jPanel1.setPreferredSize(new Dimension(WIDTH,20));
             scrollPane1.setVisible(false);      
-            ChkInput.setVisible(true);
+            ChkInput1.setVisible(true);
         }
+    }
+    
+  private void isForm2(){
+        if(ChkInput2.isSelected()==true){
+            ChkInput2.setVisible(false);
+            jPanel2.setPreferredSize(new Dimension(WIDTH,282));
+            scrollPane2.setVisible(true);
+            ChkInput2.setVisible(true);
+        }else if(ChkInput2.isSelected()==false){           
+            ChkInput2.setVisible(false);            
+            jPanel2.setPreferredSize(new Dimension(WIDTH,20));
+            scrollPane2.setVisible(false);      
+            ChkInput2.setVisible(true);
+        }
+    }
+  
+    private void isForm3(){
+        if(ChkInput3.isSelected()==true){
+            ChkInput3.setVisible(false);
+            jPanel3.setPreferredSize(new Dimension(WIDTH,282));
+            scrollPane3.setVisible(true);
+            ChkInput3.setVisible(true);
+        }else if(ChkInput3.isSelected()==false){           
+            ChkInput3.setVisible(false);            
+            jPanel3.setPreferredSize(new Dimension(WIDTH,20));
+            scrollPane3.setVisible(false);      
+            ChkInput3.setVisible(true);
+        }
+    }
+    
+    private void isForm4(){
+        if(ChkInput4.isSelected()==true){
+            ChkInput4.setVisible(false);
+            jPanel4.setPreferredSize(new Dimension(WIDTH,282));
+            scrollPane4.setVisible(true);
+            ChkInput4.setVisible(true);
+        }else if(ChkInput4.isSelected()==false){           
+            ChkInput4.setVisible(false);            
+            jPanel4.setPreferredSize(new Dimension(WIDTH,20));
+            scrollPane4.setVisible(false);      
+            ChkInput4.setVisible(true);
+        }
+    }
+
+     private void isRawat(){
+        Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat=? ",TNoRM,TNoRw.getText());
+    }
+
+    private void isPsien(){
+        Sequel.cariIsi("select concat(pasien.nm_pasien,' (',pasien.umur,')') from pasien where pasien.no_rkm_medis=? ",TPasien,TNoRM.getText());
+    }
+    
+    public void SetPoli(String KodePoli){
+        this.kode_poli=KodePoli;
+    }
+    
+    public void SetPj(String KodePj){
+        this.kd_pj=KodePj;
+    }
+    
+    public void setNoRm(String norwt,Date tgl1,Date tgl2) {
+        TNoRw.setText(norwt);
+
+        isRawat();
+        isPsien();  
+
+        ChkInput1.setSelected(true);
+    }
+    
+//     private void getDataObat() {
+//        if(tbPembelian.getSelectedRow()!= -1){
+//            TNoRw.setText(tbPembelian.getValueAt(tbPembelian.getSelectedRow(),1).toString());
+//            TNoRM.setText(tbPembelian.getValueAt(tbPembelian.getSelectedRow(),2).toString());
+//            TPasien.setText(tbPembelian.getValueAt(tbPembelian.getSelectedRow(),3).toString());             
+//            cmbJam.setSelectedItem(tbPembelian.getValueAt(tbPembelian.getSelectedRow(),5).toString().substring(0,2));
+//            cmbMnt.setSelectedItem(tbPembelian.getValueAt(tbPembelian.getSelectedRow(),5).toString().substring(3,5));
+//            cmbDtk.setSelectedItem(tbPembelian.getValueAt(tbPembelian.getSelectedRow(),5).toString().substring(6,8));
+//            Valid.SetTgl(DTPTgl,tbPembelian.getValueAt(tbPembelian.getSelectedRow(),4).toString());
+//        }
+//    }
+     
+    private void tampilPembelianObat() {
+        Valid.tabelKosong(tabModePembelian);
+        i=0;
+        try{  
+            ps2=koneksi.prepareStatement( "select detailjual.kode_brng,databarang.nama_brng, detailjual.jumlah from " +
+                            " detailjual inner join databarang"+
+                            " on detailjual.kode_brng=databarang.kode_brng"+
+                            " order by detailjual.kode_brng");
+                rs=ps2.executeQuery();
+                try{
+                while(rs.next()){
+                    i++;
+                    tabModePembelian.addRow(new String[]{
+                        i+"",rs.getString("kode_brng"),rs.getString("nama_brng"),rs.getString("jumlah")
+                    });
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps2!=null){
+                    ps2.close();
+                }
+            }                  
+        }catch(Exception e){
+            System.out.println("Notifikasi : "+e);
+        }
+    }
+    
+    private void tesTampilObat(){
+        try{
+            ps=koneksi.prepareStatement("select penjualan.nota_jual, penjualan.tgl_jual, "+
+                    "penjualan.nip,petugas.nama, "+
+                    "penjualan.no_rkm_medis,penjualan.nm_pasien,penjualan.nama_bayar, "+
+                    "penjualan.keterangan, penjualan.jns_jual, penjualan.ongkir,bangsal.nm_bangsal,penjualan.status "+
+                    " from penjualan inner join petugas on penjualan.nip=petugas.nip "+
+                    " inner join bangsal on penjualan.kd_bangsal=bangsal.kd_bangsal "+
+                    " where penjualan.status='Sudah Dibayar' and penjualan.no_rkm_medis=? order by penjualan.tgl_jual desc limit 5");
+            
+            try {
+                ps.setString(1,TNoRM.getText().trim());
+                rs=ps.executeQuery();
+                while(rs.next()){                     
+                    ps2=koneksi.prepareStatement(
+                            "select detailjual.kode_brng,databarang.nama_brng, detailjual.kode_sat,"+
+                            " kodesatuan.satuan,detailjual.h_jual, detailjual.jumlah, "+
+                            " detailjual.subtotal, detailjual.dis, detailjual.bsr_dis,"+
+                            " detailjual.tambahan,detailjual.embalase,detailjual.tuslah,"+
+                            " detailjual.aturan_pakai,detailjual.total,detailjual.no_batch from "+
+                            " detailjual inner join databarang inner join kodesatuan inner join jenis "+
+                            " on detailjual.kode_brng=databarang.kode_brng and databarang.kdjns=jenis.kdjns "+
+                            " and detailjual.kode_sat=kodesatuan.kode_sat and "+
+                            " detailjual.kode_brng not in(select kode_brng from detail_obat_racikan_jual where nota_jual='"+rs.getString("nota_jual")+"' group by kode_brng) where "+
+                            " detailjual.nota_jual='"+rs.getString("nota_jual")+"' order by detailjual.kode_brng");
+                    try {
+                        i=1;
+                        rs2=ps2.executeQuery();
+                        while(rs2.next()){
+                            i++;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi : "+e);
+                    } finally{
+                        if(rs2!=null){
+                            rs2.close();
+                        }
+                        if(ps2!=null){
+                            ps2.close();
+                        }
+                    }
+                    ps2=koneksi.prepareStatement(
+                            "select obat_racikan_jual.no_racik,obat_racikan_jual.nama_racik,"+
+                            "obat_racikan_jual.kd_racik,metode_racik.nm_racik as metode,"+
+                            "obat_racikan_jual.jml_dr,obat_racikan_jual.aturan_pakai,"+
+                            "obat_racikan_jual.keterangan from obat_racikan_jual inner join metode_racik "+
+                            "on obat_racikan_jual.kd_racik=metode_racik.kd_racik where "+
+                            "obat_racikan_jual.nota_jual=? order by obat_racikan_jual.no_racik");
+                    try{
+                        ps2.setString(1,rs.getString("nota_jual"));
+                        rs2=ps2.executeQuery();
+                        while(rs2.next()){
+                           
+                            try {
+                                rs3=koneksi.prepareStatement("select detailjual.kode_brng,databarang.nama_brng, detailjual.kode_sat,"+
+                                    " kodesatuan.satuan,detailjual.h_jual, detailjual.jumlah, "+
+                                    " detailjual.subtotal, detailjual.dis, detailjual.bsr_dis,"+
+                                    " detailjual.tambahan,detailjual.embalase,detailjual.tuslah,"+
+                                    " detailjual.aturan_pakai,detailjual.total,detailjual.no_batch from "+
+                                    " detailjual inner join databarang inner join kodesatuan inner join jenis inner join detail_obat_racikan_jual "+
+                                    " on detailjual.kode_brng=databarang.kode_brng and databarang.kdjns=jenis.kdjns "+
+                                    " and detailjual.kode_sat=kodesatuan.kode_sat and detailjual.kode_brng=detail_obat_racikan_jual.kode_brng "+
+                                    " and detailjual.nota_jual=detail_obat_racikan_jual.nota_jual where "+
+                                    " detailjual.nota_jual='"+rs.getString("nota_jual")+"' order by detailjual.kode_brng").executeQuery();
+                                while(rs3.next()){
+                                    tabModePembelian.addRow(new Object[]{
+                                    false,rs3.getString("kode_brng"),rs3.getString("kode_brng"),rs3.getString("jumlah"), rs3.getString("tgl_jual")
+                    });
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Notifikasi 3 : "+e);
+                            } finally{
+                                if(rs3!=null){
+                                    rs3.close();
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Notifikasi 2 : "+e);
+                    } finally{
+                        if(rs2!=null){
+                            rs2.close();
+                        }
+                        if(ps2!=null){
+                            ps2.close();
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println("Notifikasi 1 : "+e);
+            } finally{
+                if(rs!=null){
+                    rs.close();
+                }
+                if(ps!=null){
+                    ps.close();
+                }
+            }
+        }catch (Exception e) {
+            System.out.println("Notif : "+e);
+        } 
     }
 }

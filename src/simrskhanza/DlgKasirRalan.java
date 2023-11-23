@@ -13760,9 +13760,9 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
 //                    ermrspw.emptTeks();
                     ermrspw.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
                     ermrspw.setLocationRelativeTo(internalFrame1);
-//                    ermrspw.SetPoli(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
-//                    ermrspw.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
-//                    ermrspw.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
+                    ermrspw.SetPoli(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
+                    ermrspw.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
+                    ermrspw.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
                     ermrspw.setVisible(true);
                 } 
             }                               

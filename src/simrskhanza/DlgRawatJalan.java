@@ -3532,6 +3532,11 @@ public final class DlgRawatJalan extends javax.swing.JDialog {
         TPasien.setEditable(false);
         TPasien.setHighlighter(null);
         TPasien.setName("TPasien"); // NOI18N
+        TPasien.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                TPasienActionPerformed(evt);
+            }
+        });
         FormInput.add(TPasien);
         TPasien.setBounds(283, 10, 270, 23);
 
@@ -8995,6 +9000,10 @@ private void BtnEditKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_B
             this.setCursor(Cursor.getDefaultCursor());
         }
     }//GEN-LAST:event_BtnAwalMedisParuActionPerformed
+
+    private void TPasienActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TPasienActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TPasienActionPerformed
 
     /**
     * @param args the command line arguments
