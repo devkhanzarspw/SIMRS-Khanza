@@ -5,6 +5,8 @@
 package ermrspw;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import static java.awt.image.ImageObserver.WIDTH;
 import javax.swing.JFrame;
 
 /**
@@ -18,7 +20,7 @@ public class ERMrspw extends javax.swing.JFrame {
      */
     public ERMrspw() {
         initComponents();
-        
+
         setExtendedState(JFrame.MAXIMIZED_BOTH);
     }
 
@@ -35,13 +37,24 @@ public class ERMrspw extends javax.swing.JFrame {
         panelBiasa1 = new widget.PanelBiasa();
         panelBiasa3 = new widget.PanelBiasa();
         internalFrame2 = new widget.InternalFrame();
-        cekBox2 = new widget.CekBox();
-        scrollPane1 = new widget.ScrollPane();
+        PanelInput = new javax.swing.JPanel();
+        ChkSoap = new widget.CekBox();
+        ScrolSoap = new widget.ScrollPane();
+        table1 = new widget.Table();
         internalFrame3 = new widget.InternalFrame();
+        PanelICD = new javax.swing.JPanel();
+        ChkIcd = new widget.CekBox();
+        ScrolIcd = new widget.ScrollPane();
+        table2 = new widget.Table();
+        internalFrame4 = new widget.InternalFrame();
+        PanelObt = new javax.swing.JPanel();
+        ChkObt = new widget.CekBox();
+        ScrolObt = new widget.ScrollPane();
+        table3 = new widget.Table();
         panelBiasa4 = new widget.PanelBiasa();
         panelBiasa2 = new widget.PanelBiasa();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder("ERM-Rumah Sakit Putra Waspada"));
         internalFrame1.setLayout(new java.awt.BorderLayout());
@@ -52,7 +65,7 @@ public class ERMrspw extends javax.swing.JFrame {
         panelBiasa1.setLayout(panelBiasa1Layout);
         panelBiasa1Layout.setHorizontalGroup(
             panelBiasa1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1461, Short.MAX_VALUE)
+            .addGap(0, 1533, Short.MAX_VALUE)
         );
         panelBiasa1Layout.setVerticalGroup(
             panelBiasa1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -68,36 +81,136 @@ public class ERMrspw extends javax.swing.JFrame {
         internalFrame2.setDoubleBuffered(false);
         internalFrame2.setLayout(new java.awt.BorderLayout());
 
-        cekBox2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
-        cekBox2.setText("Riwayat SOAPIE");
-        internalFrame2.add(cekBox2, java.awt.BorderLayout.PAGE_START);
-        internalFrame2.add(scrollPane1, java.awt.BorderLayout.CENTER);
+        PanelInput.setPreferredSize(new java.awt.Dimension(200, 25));
+        PanelInput.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout internalFrame3Layout = new javax.swing.GroupLayout(internalFrame3);
-        internalFrame3.setLayout(internalFrame3Layout);
-        internalFrame3Layout.setHorizontalGroup(
-            internalFrame3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 588, Short.MAX_VALUE)
-        );
-        internalFrame3Layout.setVerticalGroup(
-            internalFrame3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 211, Short.MAX_VALUE)
-        );
+        ChkSoap.setBackground(new java.awt.Color(51, 153, 255));
+        ChkSoap.setForeground(new java.awt.Color(255, 255, 255));
+        ChkSoap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkSoap.setText("Riwayat SOAPIE");
+        ChkSoap.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        ChkSoap.setPreferredSize(new java.awt.Dimension(163, 25));
+        ChkSoap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkSoapActionPerformed(evt);
+            }
+        });
+        PanelInput.add(ChkSoap, java.awt.BorderLayout.PAGE_START);
+
+        ScrolSoap.setOpaque(true);
+
+        table1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        ScrolSoap.setViewportView(table1);
+
+        PanelInput.add(ScrolSoap, java.awt.BorderLayout.CENTER);
+
+        internalFrame2.add(PanelInput, java.awt.BorderLayout.PAGE_START);
+
+        internalFrame3.setBorder(null);
+        internalFrame3.setDoubleBuffered(false);
+        internalFrame3.setLayout(new java.awt.BorderLayout());
+
+        PanelICD.setPreferredSize(new java.awt.Dimension(200, 25));
+        PanelICD.setLayout(new java.awt.BorderLayout());
+
+        ChkIcd.setBackground(new java.awt.Color(51, 153, 255));
+        ChkIcd.setForeground(new java.awt.Color(255, 255, 255));
+        ChkIcd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkIcd.setText("Diagnosa ICD");
+        ChkIcd.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        ChkIcd.setPreferredSize(new java.awt.Dimension(163, 25));
+        ChkIcd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkIcdActionPerformed(evt);
+            }
+        });
+        PanelICD.add(ChkIcd, java.awt.BorderLayout.PAGE_START);
+
+        ScrolIcd.setOpaque(true);
+
+        table2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        ScrolIcd.setViewportView(table2);
+
+        PanelICD.add(ScrolIcd, java.awt.BorderLayout.CENTER);
+
+        internalFrame3.add(PanelICD, java.awt.BorderLayout.PAGE_START);
+
+        internalFrame4.setBorder(null);
+        internalFrame4.setDoubleBuffered(false);
+        internalFrame4.setLayout(new java.awt.BorderLayout());
+
+        PanelObt.setPreferredSize(new java.awt.Dimension(200, 25));
+        PanelObt.setLayout(new java.awt.BorderLayout());
+
+        ChkObt.setBackground(new java.awt.Color(51, 153, 255));
+        ChkObt.setForeground(new java.awt.Color(255, 255, 255));
+        ChkObt.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkObt.setText("Pemberian Obat");
+        ChkObt.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        ChkObt.setPreferredSize(new java.awt.Dimension(163, 25));
+        ChkObt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkObtActionPerformed(evt);
+            }
+        });
+        PanelObt.add(ChkObt, java.awt.BorderLayout.PAGE_START);
+
+        ScrolObt.setOpaque(true);
+
+        table3.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        ScrolObt.setViewportView(table3);
+
+        PanelObt.add(ScrolObt, java.awt.BorderLayout.CENTER);
+
+        internalFrame4.add(PanelObt, java.awt.BorderLayout.PAGE_START);
 
         javax.swing.GroupLayout panelBiasa3Layout = new javax.swing.GroupLayout(panelBiasa3);
         panelBiasa3.setLayout(panelBiasa3Layout);
         panelBiasa3Layout.setHorizontalGroup(
             panelBiasa3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+            .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+            .addComponent(internalFrame4, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
         );
         panelBiasa3Layout.setVerticalGroup(
             panelBiasa3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBiasa3Layout.createSequentialGroup()
-                .addComponent(internalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(internalFrame2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(internalFrame3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 176, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(internalFrame4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 591, Short.MAX_VALUE))
         );
 
         internalFrame1.add(panelBiasa3, java.awt.BorderLayout.LINE_START);
@@ -124,7 +237,7 @@ public class ERMrspw extends javax.swing.JFrame {
         panelBiasa2.setLayout(panelBiasa2Layout);
         panelBiasa2Layout.setHorizontalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 553, Short.MAX_VALUE)
+            .addGap(0, 625, Short.MAX_VALUE)
         );
         panelBiasa2Layout.setVerticalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -138,6 +251,18 @@ public class ERMrspw extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void ChkSoapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkSoapActionPerformed
+        isSoap();
+    }//GEN-LAST:event_ChkSoapActionPerformed
+
+    private void ChkIcdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkIcdActionPerformed
+        isIcd();
+    }//GEN-LAST:event_ChkIcdActionPerformed
+
+    private void ChkObtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkObtActionPerformed
+        isObt();
+    }//GEN-LAST:event_ChkObtActionPerformed
 
     /**
      * @param args the command line arguments
@@ -175,14 +300,85 @@ public class ERMrspw extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private widget.CekBox cekBox2;
+    private widget.CekBox ChkIcd;
+    private widget.CekBox ChkObt;
+    private widget.CekBox ChkSoap;
+    private javax.swing.JPanel PanelICD;
+    private javax.swing.JPanel PanelInput;
+    private javax.swing.JPanel PanelObt;
+    private widget.ScrollPane ScrolIcd;
+    private widget.ScrollPane ScrolObt;
+    private widget.ScrollPane ScrolSoap;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame2;
     private widget.InternalFrame internalFrame3;
+    private widget.InternalFrame internalFrame4;
     private widget.PanelBiasa panelBiasa1;
     private widget.PanelBiasa panelBiasa2;
     private widget.PanelBiasa panelBiasa3;
     private widget.PanelBiasa panelBiasa4;
-    private widget.ScrollPane scrollPane1;
+    private widget.Table table1;
+    private widget.Table table2;
+    private widget.Table table3;
     // End of variables declaration//GEN-END:variables
+
+    private void isSoap() {
+        if (ChkSoap.isSelected() == true) {
+            ChkSoap.setVisible(false);
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 500));
+            ScrolSoap.setVisible(true);
+            ChkSoap.setVisible(true);
+            
+            ChkIcd.setSelected(false);
+            PanelICD.setPreferredSize(new Dimension(WIDTH, 25));
+            
+            ChkObt.setSelected(false);
+            PanelObt.setPreferredSize(new Dimension(WIDTH, 25));
+        } else if (ChkSoap.isSelected() == false) {
+            ChkSoap.setVisible(false);
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 25));
+            ScrolSoap.setVisible(false);
+            ChkSoap.setVisible(true);
+        }
+    }
+
+    private void isIcd() {
+        if (ChkIcd.isSelected() == true) {
+            ChkIcd.setVisible(false);
+            PanelICD.setPreferredSize(new Dimension(WIDTH, 500));
+            ScrolIcd.setVisible(true);
+            ChkIcd.setVisible(true);
+            
+            ChkSoap.setSelected(false);
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 25));
+            
+            ChkObt.setSelected(false);
+            PanelObt.setPreferredSize(new Dimension(WIDTH, 25));
+        } else if (ChkSoap.isSelected() == false) {
+            ChkIcd.setVisible(false);
+            PanelICD.setPreferredSize(new Dimension(WIDTH, 25));
+            ScrolIcd.setVisible(false);
+            ChkIcd.setVisible(true);
+        }
+    }
+    
+    private void isObt() {
+        if (ChkObt.isSelected() == true) {
+            ChkObt.setVisible(false);
+            PanelObt.setPreferredSize(new Dimension(WIDTH, 500));
+            ScrolObt.setVisible(true);
+            ChkObt.setVisible(true);
+            
+            ChkSoap.setSelected(false);
+            PanelInput.setPreferredSize(new Dimension(WIDTH, 25));
+            
+            ChkIcd.setSelected(false);
+            PanelICD.setPreferredSize(new Dimension(WIDTH, 25));
+        } else if (ChkObt.isSelected() == false) {
+            ChkObt.setVisible(false);
+            PanelObt.setPreferredSize(new Dimension(WIDTH, 25));
+            ScrolObt.setVisible(false);
+            ChkObt.setVisible(true);
+        }
+    }
 }

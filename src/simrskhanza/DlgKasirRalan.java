@@ -209,6 +209,7 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
     private int i=0,pilihan=0,sudah=0,jmlparsial=0;
     public DlgKamarInap kamarinap=new DlgKamarInap(null,false);
     private DlgRawatJalan dlgrwjl2=new DlgRawatJalan(null,false);
+    private ermrspw.ERMrspw ermrspw=new ermrspw.ERMrspw();
     private boolean semua;
     private boolean sukses=false;
     private Jurnal jur=new Jurnal();
@@ -7813,25 +7814,27 @@ private void MnBelumActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 }//GEN-LAST:event_MnBelumActionPerformed
 
 private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_MnDataRalanActionPerformed
-        if(tabModekasir.getRowCount()==0){
-            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
-            TCari.requestFocus();
-        }else{
-            if(tbKasirRalan.getSelectedRow()!= -1){
-                if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
-                    JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
-                }else {
-                    dlgrwjl2.isCek();
-                    dlgrwjl2.emptTeks();
-                    dlgrwjl2.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
-                    dlgrwjl2.setLocationRelativeTo(internalFrame1);
-                    dlgrwjl2.SetPoli(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
-                    dlgrwjl2.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
-                    dlgrwjl2.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
-                    dlgrwjl2.setVisible(true);
-                } 
-            }                               
-        }
+//        if(tabModekasir.getRowCount()==0){
+//            JOptionPane.showMessageDialog(null,"Maaf, table masih kosong...!!!!");
+//            TCari.requestFocus();
+//        }else{
+//            if(tbKasirRalan.getSelectedRow()!= -1){
+//                if(Sequel.cariInteger("select count(kamar_inap.no_rawat) from kamar_inap where kamar_inap.no_rawat=?",TNoRw.getText())>0){
+//                    JOptionPane.showMessageDialog(null,"Maaf, Pasien sudah masuk Kamar Inap. Gunakan billing Ranap..!!!");
+//                }else {
+//                    dlgrwjl2.isCek();
+//                    dlgrwjl2.emptTeks();
+//                    dlgrwjl2.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+//                    dlgrwjl2.setLocationRelativeTo(internalFrame1);
+//                    dlgrwjl2.SetPoli(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
+//                    dlgrwjl2.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
+//                    dlgrwjl2.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
+//                    dlgrwjl2.setVisible(true);
+//                } 
+//            }                               
+//        }
+
+          ermrspw.setVisible(true);
 }//GEN-LAST:event_MnDataRalanActionPerformed
 
 private void TotalObatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TotalObatKeyPressed
