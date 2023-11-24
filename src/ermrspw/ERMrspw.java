@@ -8,20 +8,41 @@ import java.awt.Color;
 import java.awt.Dimension;
 import static java.awt.image.ImageObserver.WIDTH;
 import javax.swing.JFrame;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author GINANJAR
  */
-public class ERMrspw extends javax.swing.JFrame {
+public final class ERMrspw extends javax.swing.JFrame {
 
-    /**
-     * Creates new form ERMrspw
-     */
+    private final DefaultTableModel tabModeSoap;
     public ERMrspw() {
         initComponents();
-
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        
+        tabModeSoap=new DefaultTableModel(null,new Object[]{
+            "P","No.Rawat","No.R.M.","Nama Pasien","Perawatan/Tindakan","Kode Dokter"}){
+             @Override public boolean isCellEditable(int rowIndex, int colIndex){
+                boolean a = false;
+                if (colIndex==0) {
+                    a=true;
+                }
+                return a;
+             }
+             Class[] types = new Class[] {
+                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, 
+                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+             };
+             @Override
+             public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+             }
+        };
+        table1.setModel(tabModeSoap);
+        table1.setPreferredScrollableViewportSize(new Dimension(500,500));
+        table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     }
 
     /**
@@ -65,7 +86,7 @@ public class ERMrspw extends javax.swing.JFrame {
         panelBiasa1.setLayout(panelBiasa1Layout);
         panelBiasa1Layout.setHorizontalGroup(
             panelBiasa1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1533, Short.MAX_VALUE)
+            .addGap(0, 1353, Short.MAX_VALUE)
         );
         panelBiasa1Layout.setVerticalGroup(
             panelBiasa1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -75,7 +96,7 @@ public class ERMrspw extends javax.swing.JFrame {
         internalFrame1.add(panelBiasa1, java.awt.BorderLayout.PAGE_START);
 
         panelBiasa3.setBorder(javax.swing.BorderFactory.createTitledBorder("Riwayat Perawatan Pasien"));
-        panelBiasa3.setPreferredSize(new java.awt.Dimension(600, 300));
+        panelBiasa3.setPreferredSize(new java.awt.Dimension(500, 300));
 
         internalFrame2.setBorder(null);
         internalFrame2.setDoubleBuffered(false);
@@ -198,9 +219,9 @@ public class ERMrspw extends javax.swing.JFrame {
         panelBiasa3.setLayout(panelBiasa3Layout);
         panelBiasa3Layout.setHorizontalGroup(
             panelBiasa3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
-            .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
-            .addComponent(internalFrame4, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(internalFrame4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         panelBiasa3Layout.setVerticalGroup(
             panelBiasa3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -210,13 +231,12 @@ public class ERMrspw extends javax.swing.JFrame {
                 .addComponent(internalFrame3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(internalFrame4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 591, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         internalFrame1.add(panelBiasa3, java.awt.BorderLayout.LINE_START);
 
         panelBiasa4.setBorder(javax.swing.BorderFactory.createTitledBorder("Hasil Asesmen Terkini"));
-        panelBiasa4.setPreferredSize(new java.awt.Dimension(300, 785));
 
         javax.swing.GroupLayout panelBiasa4Layout = new javax.swing.GroupLayout(panelBiasa4);
         panelBiasa4.setLayout(panelBiasa4Layout);
@@ -226,7 +246,7 @@ public class ERMrspw extends javax.swing.JFrame {
         );
         panelBiasa4Layout.setVerticalGroup(
             panelBiasa4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 608, Short.MAX_VALUE)
+            .addGap(0, 762, Short.MAX_VALUE)
         );
 
         internalFrame1.add(panelBiasa4, java.awt.BorderLayout.EAST);
@@ -237,11 +257,11 @@ public class ERMrspw extends javax.swing.JFrame {
         panelBiasa2.setLayout(panelBiasa2Layout);
         panelBiasa2Layout.setHorizontalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 625, Short.MAX_VALUE)
+            .addGap(0, 545, Short.MAX_VALUE)
         );
         panelBiasa2Layout.setVerticalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 608, Short.MAX_VALUE)
+            .addGap(0, 762, Short.MAX_VALUE)
         );
 
         internalFrame1.add(panelBiasa2, java.awt.BorderLayout.CENTER);
