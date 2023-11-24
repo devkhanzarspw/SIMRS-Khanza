@@ -13762,7 +13762,7 @@ private void MnDataPemberianObatActionPerformed(java.awt.event.ActionEvent evt) 
                     ermrspw.setLocationRelativeTo(internalFrame1);
                     ermrspw.SetPoli(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
                     ermrspw.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
-                    ermrspw.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
+                    ermrspw.setNoRm(TNoRw.getText(),TNoRMCari.getText(),DTPCari1.getDate(),DTPCari2.getDate());    
                     ermrspw.setVisible(true);
                 } 
             }                               
