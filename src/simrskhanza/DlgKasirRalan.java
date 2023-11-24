@@ -7833,7 +7833,10 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 //                } 
 //            }                               
 //        }
-
+          ermrspw.isCek();
+          ermrspw.SetPoli(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),18).toString());
+          ermrspw.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
+          ermrspw.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());
           ermrspw.setVisible(true);
 }//GEN-LAST:event_MnDataRalanActionPerformed
 

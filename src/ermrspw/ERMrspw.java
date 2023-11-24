@@ -4,12 +4,27 @@
  */
 package ermrspw;
 
+import fungsi.akses;
+import fungsi.koneksiDB;
+import fungsi.sekuel;
+import fungsi.validasi;
 import java.awt.Color;
 import java.awt.Dimension;
 import static java.awt.image.ImageObserver.WIDTH;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.Date;
+import java.util.Properties;
 import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import kepegawaian.DlgCariDokter;
+import kepegawaian.DlgCariPegawai;
+import kepegawaian.DlgCariPetugas;
+import keuangan.Jurnal;
+import rekammedis.RMCari5SOAPTerakhir;
+import simrskhanza.DlgCariPasien;
 
 /**
  *
@@ -18,30 +33,56 @@ import javax.swing.table.DefaultTableModel;
 public final class ERMrspw extends javax.swing.JFrame {
 
     private final DefaultTableModel tabModeSoap;
+    private Connection koneksi = koneksiDB.condb();
+    private sekuel Sequel = new sekuel();
+    private validasi Valid = new validasi();
+    private DlgCariPasien pasien = new DlgCariPasien(null, false);
+    private DlgCariDokter dokter = new DlgCariDokter(null, false);
+    public DlgCariPetugas petugas = new DlgCariPetugas(null, false);
+    public DlgCariPegawai pegawai = new DlgCariPegawai(null, false);
+    private RMCari5SOAPTerakhir soapterakhir = new RMCari5SOAPTerakhir(null, false);
+    private PreparedStatement ps, ps2, ps3, ps4, ps5, ps6, pstindakan, psset_tarif, psrekening;
+    private ResultSet rs, rstindakan, rsset_tarif, rsrekening;
+    private int i = 0, jmlparsial = 0, jml = 0, index = 0, tinggi = 0;
+    private String aktifkanparsial = "no", kode_poli = "", kd_pj = "", poli_ralan = "No", cara_bayar_ralan = "No",
+            Suspen_Piutang_Tindakan_Ralan = "", Tindakan_Ralan = "", Beban_Jasa_Medik_Dokter_Tindakan_Ralan = "", Utang_Jasa_Medik_Dokter_Tindakan_Ralan = "",
+            Beban_Jasa_Medik_Paramedis_Tindakan_Ralan = "", Utang_Jasa_Medik_Paramedis_Tindakan_Ralan = "", Beban_KSO_Tindakan_Ralan = "", Utang_KSO_Tindakan_Ralan = "",
+            Beban_Jasa_Sarana_Tindakan_Ralan = "", Utang_Jasa_Sarana_Tindakan_Ralan = "", HPP_BHP_Tindakan_Ralan = "", Persediaan_BHP_Tindakan_Ralan = "",
+            Beban_Jasa_Menejemen_Tindakan_Ralan = "", Utang_Jasa_Menejemen_Tindakan_Ralan = "";
+    private final Properties prop = new Properties();
+    private boolean[] pilih;
+    private String[] kode, nama, kategori;
+    private double[] totaltnd, bagianrs, bhp, jmdokter, jmperawat, kso, menejemen;
+    private boolean sukses = false;
+    private double ttljmdokter = 0, ttljmperawat = 0, ttlkso = 0, ttljasasarana = 0, ttlbhp = 0, ttlmenejemen = 0, ttlpendapatan = 0;
+    private Jurnal jur = new Jurnal();
+
     public ERMrspw() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
-        tabModeSoap=new DefaultTableModel(null,new Object[]{
-            "P","No.Rawat","No.R.M.","Nama Pasien","Perawatan/Tindakan","Kode Dokter"}){
-             @Override public boolean isCellEditable(int rowIndex, int colIndex){
+
+        tabModeSoap = new DefaultTableModel(null, new Object[]{
+            "P", "No.Rawat", "No.R.M.", "Nama Pasien", "Perawatan/Tindakan", "Kode Dokter"}) {
+            @Override
+            public boolean isCellEditable(int rowIndex, int colIndex) {
                 boolean a = false;
-                if (colIndex==0) {
-                    a=true;
+                if (colIndex == 0) {
+                    a = true;
                 }
                 return a;
-             }
-             Class[] types = new Class[] {
-                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class, 
-                 java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
-             };
-             @Override
-             public Class getColumnClass(int columnIndex) {
-                return types [columnIndex];
-             }
+            }
+            Class[] types = new Class[]{
+                java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class,
+                java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+            };
+
+            @Override
+            public Class getColumnClass(int columnIndex) {
+                return types[columnIndex];
+            }
         };
         table1.setModel(tabModeSoap);
-        table1.setPreferredScrollableViewportSize(new Dimension(500,500));
+        table1.setPreferredScrollableViewportSize(new Dimension(500, 500));
         table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
     }
 
@@ -54,8 +95,38 @@ public final class ERMrspw extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        textBox1 = new widget.TextBox();
         internalFrame1 = new widget.InternalFrame();
         panelBiasa1 = new widget.PanelBiasa();
+        textBox2 = new widget.TextBox();
+        TPasien = new widget.TextBox();
+        label1 = new widget.Label();
+        label3 = new widget.Label();
+        cmbJam = new widget.ComboBox();
+        cmbMnt = new widget.ComboBox();
+        cmbDtk = new widget.ComboBox();
+        DTPTgl = new widget.Tanggal();
+        TNoRw = new widget.TextBox();
+        textBox6 = new widget.TextBox();
+        KdDok = new widget.TextBox();
+        label4 = new widget.Label();
+        label5 = new widget.Label();
+        label6 = new widget.Label();
+        label7 = new widget.Label();
+        label8 = new widget.Label();
+        label9 = new widget.Label();
+        label10 = new widget.Label();
+        label12 = new widget.Label();
+        TNoRM = new widget.TextBox();
+        TDokter = new widget.TextBox();
+        label13 = new widget.Label();
+        label14 = new widget.Label();
+        TJk = new widget.TextBox();
+        textBox11 = new widget.TextBox();
+        textBox12 = new widget.TextBox();
+        TJabatan = new widget.TextBox();
+        label15 = new widget.Label();
+        label16 = new widget.Label();
         panelBiasa3 = new widget.PanelBiasa();
         internalFrame2 = new widget.InternalFrame();
         PanelInput = new javax.swing.JPanel();
@@ -75,23 +146,155 @@ public final class ERMrspw extends javax.swing.JFrame {
         panelBiasa4 = new widget.PanelBiasa();
         panelBiasa2 = new widget.PanelBiasa();
 
+        textBox1.setText("textBox1");
+
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder("ERM-Rumah Sakit Putra Waspada"));
         internalFrame1.setLayout(new java.awt.BorderLayout());
 
-        panelBiasa1.setPreferredSize(new java.awt.Dimension(1355, 100));
+        panelBiasa1.setPreferredSize(new java.awt.Dimension(1355, 150));
+        panelBiasa1.setLayout(null);
+        panelBiasa1.add(textBox2);
+        textBox2.setBounds(590, 100, 290, 24);
+        panelBiasa1.add(TPasien);
+        TPasien.setBounds(590, 40, 290, 24);
 
-        javax.swing.GroupLayout panelBiasa1Layout = new javax.swing.GroupLayout(panelBiasa1);
-        panelBiasa1.setLayout(panelBiasa1Layout);
-        panelBiasa1Layout.setHorizontalGroup(
-            panelBiasa1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1353, Short.MAX_VALUE)
-        );
-        panelBiasa1Layout.setVerticalGroup(
-            panelBiasa1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 98, Short.MAX_VALUE)
-        );
+        label1.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label1.setText("No. Rawat");
+        panelBiasa1.add(label1);
+        label1.setBounds(510, 10, 60, 14);
+
+        label3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label3.setText("Nama");
+        panelBiasa1.add(label3);
+        label3.setBounds(510, 40, 60, 14);
+
+        cmbJam.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
+        cmbJam.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbJam.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbJamKeyPressed(evt);
+            }
+        });
+        panelBiasa1.add(cmbJam);
+        cmbJam.setBounds(1550, 10, 62, 23);
+
+        cmbMnt.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+        cmbMnt.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbMnt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbMntKeyPressed(evt);
+            }
+        });
+        panelBiasa1.add(cmbMnt);
+        cmbMnt.setBounds(1620, 10, 62, 23);
+
+        cmbDtk.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" }));
+        cmbDtk.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbDtk.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbDtkKeyPressed(evt);
+            }
+        });
+        panelBiasa1.add(cmbDtk);
+        cmbDtk.setBounds(1690, 10, 62, 23);
+
+        DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24-11-2023" }));
+        DTPTgl.setDisplayFormat("dd-MM-yyyy");
+        DTPTgl.setOpaque(false);
+        DTPTgl.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                DTPTglKeyPressed(evt);
+            }
+        });
+        panelBiasa1.add(DTPTgl);
+        DTPTgl.setBounds(1450, 10, 90, 23);
+        panelBiasa1.add(TNoRw);
+        TNoRw.setBounds(590, 10, 180, 24);
+
+        textBox6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                textBox6ActionPerformed(evt);
+            }
+        });
+        panelBiasa1.add(textBox6);
+        textBox6.setBounds(1000, 10, 250, 24);
+        panelBiasa1.add(KdDok);
+        KdDok.setBounds(1000, 40, 70, 24);
+
+        label4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label4.setText("Poliklinik");
+        panelBiasa1.add(label4);
+        label4.setBounds(930, 10, 50, 14);
+
+        label5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label5.setText("Dokter");
+        panelBiasa1.add(label5);
+        label5.setBounds(930, 40, 50, 14);
+
+        label6.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label6.setText("Asuransi");
+        panelBiasa1.add(label6);
+        label6.setBounds(510, 100, 50, 14);
+
+        label7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label7.setText(":");
+        panelBiasa1.add(label7);
+        label7.setBounds(990, 10, 10, 14);
+
+        label8.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label8.setText(":");
+        panelBiasa1.add(label8);
+        label8.setBounds(990, 40, 10, 14);
+
+        label9.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label9.setText(":");
+        panelBiasa1.add(label9);
+        label9.setBounds(580, 100, 10, 14);
+
+        label10.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label10.setText(":");
+        panelBiasa1.add(label10);
+        label10.setBounds(580, 40, 10, 14);
+
+        label12.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label12.setText(":");
+        panelBiasa1.add(label12);
+        label12.setBounds(580, 10, 10, 14);
+        panelBiasa1.add(TNoRM);
+        TNoRM.setBounds(780, 10, 100, 24);
+        panelBiasa1.add(TDokter);
+        TDokter.setBounds(1080, 40, 170, 24);
+
+        label13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label13.setText("Jk/Umur");
+        panelBiasa1.add(label13);
+        label13.setBounds(510, 70, 60, 14);
+
+        label14.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label14.setText(":");
+        panelBiasa1.add(label14);
+        label14.setBounds(580, 70, 10, 14);
+        panelBiasa1.add(TJk);
+        TJk.setBounds(590, 70, 90, 24);
+        panelBiasa1.add(textBox11);
+        textBox11.setBounds(780, 70, 100, 24);
+        panelBiasa1.add(textBox12);
+        textBox12.setBounds(690, 70, 80, 24);
+        panelBiasa1.add(TJabatan);
+        TJabatan.setBounds(1000, 70, 250, 24);
+
+        label15.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label15.setText(":");
+        panelBiasa1.add(label15);
+        label15.setBounds(990, 70, 10, 14);
+
+        label16.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label16.setText("Spesialis");
+        panelBiasa1.add(label16);
+        label16.setBounds(930, 70, 50, 14);
 
         internalFrame1.add(panelBiasa1, java.awt.BorderLayout.PAGE_START);
 
@@ -219,7 +422,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         panelBiasa3.setLayout(panelBiasa3Layout);
         panelBiasa3Layout.setHorizontalGroup(
             panelBiasa3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
             .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(internalFrame4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -246,7 +449,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         );
         panelBiasa4Layout.setVerticalGroup(
             panelBiasa4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 762, Short.MAX_VALUE)
+            .addGap(0, 712, Short.MAX_VALUE)
         );
 
         internalFrame1.add(panelBiasa4, java.awt.BorderLayout.EAST);
@@ -257,11 +460,11 @@ public final class ERMrspw extends javax.swing.JFrame {
         panelBiasa2.setLayout(panelBiasa2Layout);
         panelBiasa2Layout.setHorizontalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 545, Short.MAX_VALUE)
+            .addGap(0, 946, Short.MAX_VALUE)
         );
         panelBiasa2Layout.setVerticalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 762, Short.MAX_VALUE)
+            .addGap(0, 712, Short.MAX_VALUE)
         );
 
         internalFrame1.add(panelBiasa2, java.awt.BorderLayout.CENTER);
@@ -283,6 +486,26 @@ public final class ERMrspw extends javax.swing.JFrame {
     private void ChkObtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkObtActionPerformed
         isObt();
     }//GEN-LAST:event_ChkObtActionPerformed
+
+    private void cmbJamKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbJamKeyPressed
+
+    }//GEN-LAST:event_cmbJamKeyPressed
+
+    private void cmbMntKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbMntKeyPressed
+
+    }//GEN-LAST:event_cmbMntKeyPressed
+
+    private void cmbDtkKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbDtkKeyPressed
+
+    }//GEN-LAST:event_cmbDtkKeyPressed
+
+    private void DTPTglKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_DTPTglKeyPressed
+
+    }//GEN-LAST:event_DTPTglKeyPressed
+
+    private void textBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textBox6ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_textBox6ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -323,16 +546,41 @@ public final class ERMrspw extends javax.swing.JFrame {
     private widget.CekBox ChkIcd;
     private widget.CekBox ChkObt;
     private widget.CekBox ChkSoap;
+    private widget.Tanggal DTPTgl;
+    private widget.TextBox KdDok;
     private javax.swing.JPanel PanelICD;
     private javax.swing.JPanel PanelInput;
     private javax.swing.JPanel PanelObt;
     private widget.ScrollPane ScrolIcd;
     private widget.ScrollPane ScrolObt;
     private widget.ScrollPane ScrolSoap;
+    private widget.TextBox TDokter;
+    private widget.TextBox TJabatan;
+    private widget.TextBox TJk;
+    private widget.TextBox TNoRM;
+    private widget.TextBox TNoRw;
+    private widget.TextBox TPasien;
+    private widget.ComboBox cmbDtk;
+    private widget.ComboBox cmbJam;
+    private widget.ComboBox cmbMnt;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame2;
     private widget.InternalFrame internalFrame3;
     private widget.InternalFrame internalFrame4;
+    private widget.Label label1;
+    private widget.Label label10;
+    private widget.Label label12;
+    private widget.Label label13;
+    private widget.Label label14;
+    private widget.Label label15;
+    private widget.Label label16;
+    private widget.Label label3;
+    private widget.Label label4;
+    private widget.Label label5;
+    private widget.Label label6;
+    private widget.Label label7;
+    private widget.Label label8;
+    private widget.Label label9;
     private widget.PanelBiasa panelBiasa1;
     private widget.PanelBiasa panelBiasa2;
     private widget.PanelBiasa panelBiasa3;
@@ -340,7 +588,62 @@ public final class ERMrspw extends javax.swing.JFrame {
     private widget.Table table1;
     private widget.Table table2;
     private widget.Table table3;
+    private widget.TextBox textBox1;
+    private widget.TextBox textBox11;
+    private widget.TextBox textBox12;
+    private widget.TextBox textBox2;
+    private widget.TextBox textBox6;
     // End of variables declaration//GEN-END:variables
+
+    private void isRawat() {
+        Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat=? ", TNoRM, TNoRw.getText());
+        //TCariPasien.setText(TNoRM.getText());
+    }
+
+    private void isPsien() {
+        Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ", TPasien, TNoRM.getText());
+        Sequel.cariIsi("select if(pasien.jk = 'L', 'LAKI-LAKI','PEREMPUAN') from pasien where pasien.no_rkm_medis=? ", TJk, TNoRM.getText());
+    }
+
+    public void setNoRm(String norwt, Date tgl1, Date tgl2) {
+        TNoRw.setText(norwt);
+        //TCari.setText("");
+        //DTPCari1.setDate(tgl1);
+        //DTPCari2.setDate(tgl2);
+        isRawat();
+        isPsien();
+        KdDok.setText(Sequel.cariIsi("select reg_periksa.kd_dokter from reg_periksa where reg_periksa.no_rawat=?", norwt));
+        TDokter.setText(dokter.tampil3(KdDok.getText()));
+//        KdDok2.setText(KdDok.getText());
+//        KdDok3.setText(KdDok.getText());
+//        TDokter2.setText(TDokter.getText()); 
+//        TDokter3.setText(TDokter.getText()); 
+//        ChkInput.setSelected(true);
+//        isForm();
+//        ChkInput1.setSelected(true);
+//        isForm2();
+//        ChkInput2.setSelected(true);
+//        isForm3(); 
+//        ChkInput3.setSelected(true);
+//        isForm4();
+//        TabRawatMouseClicked(null);
+    }
+
+    public void isCek() {
+        if (akses.getjml2() >= 1) {
+            KdDok.setText(akses.getkode());
+            TDokter.setText(pegawai.tampil3(KdDok.getText()));
+            TJabatan.setText(pegawai.tampilJbatan(KdDok.getText()));
+        }
+    }
+
+    public void SetPoli(String KodePoli) {
+        this.kode_poli = KodePoli;
+    }
+
+    public void SetPj(String KodePj) {
+        this.kd_pj = KodePj;
+    }
 
     private void isSoap() {
         if (ChkSoap.isSelected() == true) {
@@ -348,10 +651,10 @@ public final class ERMrspw extends javax.swing.JFrame {
             PanelInput.setPreferredSize(new Dimension(WIDTH, 500));
             ScrolSoap.setVisible(true);
             ChkSoap.setVisible(true);
-            
+
             ChkIcd.setSelected(false);
             PanelICD.setPreferredSize(new Dimension(WIDTH, 25));
-            
+
             ChkObt.setSelected(false);
             PanelObt.setPreferredSize(new Dimension(WIDTH, 25));
         } else if (ChkSoap.isSelected() == false) {
@@ -368,10 +671,10 @@ public final class ERMrspw extends javax.swing.JFrame {
             PanelICD.setPreferredSize(new Dimension(WIDTH, 500));
             ScrolIcd.setVisible(true);
             ChkIcd.setVisible(true);
-            
+
             ChkSoap.setSelected(false);
             PanelInput.setPreferredSize(new Dimension(WIDTH, 25));
-            
+
             ChkObt.setSelected(false);
             PanelObt.setPreferredSize(new Dimension(WIDTH, 25));
         } else if (ChkSoap.isSelected() == false) {
@@ -381,17 +684,17 @@ public final class ERMrspw extends javax.swing.JFrame {
             ChkIcd.setVisible(true);
         }
     }
-    
+
     private void isObt() {
         if (ChkObt.isSelected() == true) {
             ChkObt.setVisible(false);
             PanelObt.setPreferredSize(new Dimension(WIDTH, 500));
             ScrolObt.setVisible(true);
             ChkObt.setVisible(true);
-            
+
             ChkSoap.setSelected(false);
             PanelInput.setPreferredSize(new Dimension(WIDTH, 25));
-            
+
             ChkIcd.setSelected(false);
             PanelICD.setPreferredSize(new Dimension(WIDTH, 25));
         } else if (ChkObt.isSelected() == false) {
