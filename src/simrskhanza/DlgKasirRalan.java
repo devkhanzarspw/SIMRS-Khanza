@@ -7625,7 +7625,8 @@ public final class DlgKasirRalan extends javax.swing.JDialog {
                 i=tbKasirRalan.getSelectedColumn();
                 if(i==0){
                     if(akses.gettindakan_ralan()==true){
-                        MnDataRalanActionPerformed(null);
+//                        MnDataRalanActionPerformed(null);
+                        MnERMrspwActionPerformed(null);
                     }
                 }else if(i==1){
                     if(akses.getberi_obat()==true){

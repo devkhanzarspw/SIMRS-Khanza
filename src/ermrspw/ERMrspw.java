@@ -11,9 +11,12 @@ import fungsi.sekuel;
 import fungsi.validasi;
 import fungsi.akses;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -21,10 +24,16 @@ import java.util.Date;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.event.DocumentEvent;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import kepegawaian.DlgCariDokter;
 import kepegawaian.DlgCariPegawai;
+import raven.toast.Notifications;
+import rekammedis.MasterCariTemplatePemeriksaan;
+import rekammedis.RMCari5SOAPTerakhir;
 
 /**
  *
@@ -37,15 +46,19 @@ public class ERMrspw extends javax.swing.JFrame {
     private sekuel Sequel = new sekuel();
     private validasi Valid = new validasi();
     private String aktifkanparsial = "no", kode_poli = "", kd_pj = "";
-    public  DlgCariPegawai pegawai=new DlgCariPegawai(null,false); 
+    public DlgCariPegawai pegawai = new DlgCariPegawai(null, false);
+    private DlgCariDokter dokter = new DlgCariDokter(null, false);
+    private RMCari5SOAPTerakhir soapterakhir = new RMCari5SOAPTerakhir(null, false);
     private int i = 0, index = 0;
     private PreparedStatement ps, ps2, ps3, ps4;
     private ResultSet rs, rs2, rs3, rs4;
 
-    
     Logger logger = Logger.getLogger("Logging");
+
     public ERMrspw() {
         initComponents();
+
+        Notifications.getInstance().setJFrame(this);
 
         setExtendedState(JFrame.MAXIMIZED_BOTH);
 
@@ -82,33 +95,146 @@ public class ERMrspw extends javax.swing.JFrame {
         tbPembelian.setDefaultRenderer(Object.class, new WarnaTable());
 
         tabModeRiwayatSOAP = new DefaultTableModel(null, new Object[]{
-            "Tgl.Reg", "Status", "S.O.A.P.I.E"}) {
-            @Override
-            public boolean isCellEditable(int rowIndex, int colIndex) {
+            "P","No. Rawat","Tgl Perawatan", "Jam Rawat", "Status", "S.O.A.P.I.E"}) {
+             @Override public boolean isCellEditable(int rowIndex, int colIndex){
                 boolean a = false;
-                if (colIndex == 0) {
-                    a = true;
+                if (colIndex==0) {
+                    a=true;
                 }
                 return a;
-            }
+             }
+             Class[] types = new Class[] {
+                 java.lang.Boolean.class, java.lang.Object.class, java.lang.Object.class,java.lang.Object.class,
+                 java.lang.Object.class, java.lang.Object.class, 
+             };
+             @Override
+             public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+             }
         };
 
         tbPemeriksaanSOAP.setModel(tabModeRiwayatSOAP);
         tbPemeriksaanSOAP.setPreferredScrollableViewportSize(new Dimension(500, 500));
         tbPemeriksaanSOAP.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < 6; i++) {
             TableColumn column = tbPemeriksaanSOAP.getColumnModel().getColumn(i);
-            if (i == 0) {
-                column.setPreferredWidth(80);
+            if(i==0){
+                column.setPreferredWidth(20);
             } else if (i == 1) {
                 column.setPreferredWidth(120);
             } else if (i == 2) {
+                column.setPreferredWidth(80);
+            }else if (i == 3) {
+                column.setPreferredWidth(80);
+            } else if (i == 4) {
+                column.setPreferredWidth(80);
+            }
+            else if (i == 5) {
                 column.setPreferredWidth(400);
             }
         }
 
         tbPemeriksaanSOAP.setDefaultRenderer(Object.class, new WarnaTable());
+
+//       if(koneksiDB.CARICEPAT().equals("aktif")){
+//            TCari.getDocument().addDocumentListener(new javax.swing.event.DocumentListener(){
+//                @Override
+//                public void insertUpdate(DocumentEvent e) {
+//                    if(TCari.getText().length()>2){
+//                        TampilkanData();
+//                    }
+//                }
+//                @Override
+//                public void removeUpdate(DocumentEvent e) {
+//                    if(TCari.getText().length()>2){
+//                        TampilkanData();
+//                    }
+//                }
+//                @Override
+//                public void changedUpdate(DocumentEvent e) {
+//                    if(TCari.getText().length()>2){
+//                        TampilkanData();
+//                    }
+//                }
+//            });
+//        }  
+        pegawai.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (akses.getform().equals("DlgRawatJalan")) {
+                    if (pegawai.getTable().getSelectedRow() != -1) {
+                        KdPeg.setText(pegawai.getTable().getValueAt(pegawai.getTable().getSelectedRow(), 0).toString());
+                        TPegawai.setText(pegawai.getTable().getValueAt(pegawai.getTable().getSelectedRow(), 1).toString());
+                        Jabatan.setText(pegawai.getTable().getValueAt(pegawai.getTable().getSelectedRow(), 3).toString());
+                        KdPeg.requestFocus();
+                    }
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
+
+        soapterakhir.addWindowListener(new WindowListener() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                if (soapterakhir.getTable().getSelectedRow() != -1) {
+                    TKeluhan.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 2).toString());
+                    TPemeriksaan.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 3).toString());
+                    TPenilaian.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 4).toString());
+                    TindakLanjut.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 5).toString());
+                    TInstruksi.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 6).toString());
+                    TEvaluasi.setText(soapterakhir.getTable().getValueAt(soapterakhir.getTable().getSelectedRow(), 7).toString());
+                    TEvaluasi.requestFocus();
+                }
+            }
+
+            @Override
+            public void windowIconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            @Override
+            public void windowActivated(WindowEvent e) {
+            }
+
+            @Override
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
     }
 
     /**
@@ -161,6 +287,55 @@ public class ERMrspw extends javax.swing.JFrame {
         KdPeg = new widget.TextBox();
         TPegawai = new widget.TextBox();
         BtnSeekPegawai = new widget.Button();
+        Jabatan = new widget.TextBox();
+        jLabel41 = new widget.Label();
+        Btn5Soap = new widget.Button();
+        BtnTemplatePemeriksaan = new widget.Button();
+        jLabel8 = new widget.Label();
+        scrollPane5 = new widget.ScrollPane();
+        TKeluhan = new widget.TextArea();
+        scrollPane6 = new widget.ScrollPane();
+        TPemeriksaan = new widget.TextArea();
+        jLabel9 = new widget.Label();
+        jLabel28 = new widget.Label();
+        scrollPane7 = new widget.ScrollPane();
+        TPenilaian = new widget.TextArea();
+        jLabel26 = new widget.Label();
+        scrollPane8 = new widget.ScrollPane();
+        TindakLanjut = new widget.TextArea();
+        jLabel53 = new widget.Label();
+        scrollPane9 = new widget.ScrollPane();
+        TInstruksi = new widget.TextArea();
+        jLabel56 = new widget.Label();
+        scrollPane10 = new widget.ScrollPane();
+        TEvaluasi = new widget.TextArea();
+        BtnSimpan = new widget.Button();
+        jLabel7 = new widget.Label();
+        TSuhu = new widget.TextBox();
+        jLabel17 = new widget.Label();
+        TTinggi = new widget.TextBox();
+        jLabel16 = new widget.Label();
+        TBerat = new widget.TextBox();
+        jLabel10 = new widget.Label();
+        TTensi = new widget.TextBox();
+        jLabel20 = new widget.Label();
+        TRespirasi = new widget.TextBox();
+        jLabel18 = new widget.Label();
+        TNadi = new widget.TextBox();
+        jLabel54 = new widget.Label();
+        SpO2 = new widget.TextBox();
+        jLabel22 = new widget.Label();
+        TGCS = new widget.TextBox();
+        jLabel29 = new widget.Label();
+        cmbKesadaran = new widget.ComboBox();
+        LingkarPerut = new widget.TextBox();
+        jLabel25 = new widget.Label();
+        jLabel15 = new widget.Label();
+        TAlergi = new widget.TextBox();
+        BtnAll = new widget.Button();
+        jLabel11 = new widget.Label();
+        LCount = new widget.Label();
+        BtnHapus = new widget.Button();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -216,7 +391,7 @@ public class ERMrspw extends javax.swing.JFrame {
         jLabel23.setBounds(1130, 0, 60, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "23-11-2023" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-11-2023" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setOpaque(false);
         DTPTgl.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -315,7 +490,6 @@ public class ERMrspw extends javax.swing.JFrame {
         ChkInput1.setMnemonic('I');
         ChkInput1.setText(".: Riwayat S O A P I E");
         ChkInput1.setToolTipText("Alt+I");
-        ChkInput1.setActionCommand(".: Riwayat S O A P I E");
         ChkInput1.setBorderPainted(true);
         ChkInput1.setBorderPaintedFlat(true);
         ChkInput1.setFocusable(false);
@@ -570,12 +744,273 @@ public class ERMrspw extends javax.swing.JFrame {
             }
         });
 
+        Jabatan.setEditable(false);
+        Jabatan.setHighlighter(null);
+
+        jLabel41.setText("Profesi / Jabatan / Departemen :");
+
+        Btn5Soap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        Btn5Soap.setMnemonic('4');
+        Btn5Soap.setToolTipText("ALt+4");
+        Btn5Soap.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Btn5SoapActionPerformed(evt);
+            }
+        });
+
+        BtnTemplatePemeriksaan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/190.png"))); // NOI18N
+        BtnTemplatePemeriksaan.setMnemonic('4');
+        BtnTemplatePemeriksaan.setToolTipText("ALt+4");
+        BtnTemplatePemeriksaan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnTemplatePemeriksaanActionPerformed(evt);
+            }
+        });
+
+        jLabel8.setText("Subjek :");
+
+        scrollPane5.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        TKeluhan.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TKeluhan.setColumns(20);
+        TKeluhan.setRows(5);
+        TKeluhan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TKeluhanKeyPressed(evt);
+            }
+        });
+        scrollPane5.setViewportView(TKeluhan);
+
+        scrollPane6.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        TPemeriksaan.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TPemeriksaan.setColumns(20);
+        TPemeriksaan.setRows(5);
+        TPemeriksaan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TPemeriksaanKeyPressed(evt);
+            }
+        });
+        scrollPane6.setViewportView(TPemeriksaan);
+
+        jLabel9.setText("Objek :");
+
+        jLabel28.setText("Asesmen :");
+
+        scrollPane7.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        TPenilaian.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TPenilaian.setColumns(20);
+        TPenilaian.setRows(5);
+        TPenilaian.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TPenilaianKeyPressed(evt);
+            }
+        });
+        scrollPane7.setViewportView(TPenilaian);
+
+        jLabel26.setText("Plan :");
+
+        scrollPane8.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        TindakLanjut.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TindakLanjut.setColumns(20);
+        TindakLanjut.setRows(5);
+        TindakLanjut.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TindakLanjutKeyPressed(evt);
+            }
+        });
+        scrollPane8.setViewportView(TindakLanjut);
+
+        jLabel53.setText("Instruksi :");
+
+        scrollPane9.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        TInstruksi.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TInstruksi.setColumns(20);
+        TInstruksi.setRows(5);
+        TInstruksi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TInstruksiKeyPressed(evt);
+            }
+        });
+        scrollPane9.setViewportView(TInstruksi);
+
+        jLabel56.setText("Evaluasi :");
+
+        scrollPane10.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        TEvaluasi.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TEvaluasi.setColumns(20);
+        TEvaluasi.setRows(5);
+        TEvaluasi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TEvaluasiKeyPressed(evt);
+            }
+        });
+        scrollPane10.setViewportView(TEvaluasi);
+
+        BtnSimpan.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
+        BtnSimpan.setMnemonic('S');
+        BtnSimpan.setText("Simpan");
+        BtnSimpan.setToolTipText("Alt+S");
+        BtnSimpan.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnSimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnSimpanActionPerformed(evt);
+            }
+        });
+        BtnSimpan.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnSimpanKeyPressed(evt);
+            }
+        });
+
+        jLabel7.setText("Suhu (°C) :");
+
+        TSuhu.setFocusTraversalPolicyProvider(true);
+        TSuhu.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TSuhuKeyPressed(evt);
+            }
+        });
+
+        jLabel17.setText("Tinggi Badan (Cm) :");
+
+        TTinggi.setFocusTraversalPolicyProvider(true);
+        TTinggi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TTinggiKeyPressed(evt);
+            }
+        });
+
+        jLabel16.setText("Berat (Kg) :");
+
+        TBerat.setHighlighter(null);
+        TBerat.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TBeratKeyPressed(evt);
+            }
+        });
+
+        jLabel10.setText("Tensi :");
+
+        TTensi.setHighlighter(null);
+        TTensi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TTensiKeyPressed(evt);
+            }
+        });
+
+        jLabel20.setText("Respirasi (/menit) :");
+
+        TRespirasi.setHighlighter(null);
+        TRespirasi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TRespirasiKeyPressed(evt);
+            }
+        });
+
+        jLabel18.setText("Nadi (/menit) :");
+
+        TNadi.setFocusTraversalPolicyProvider(true);
+        TNadi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TNadiKeyPressed(evt);
+            }
+        });
+
+        jLabel54.setText("SpO2 (%) :");
+
+        SpO2.setFocusTraversalPolicyProvider(true);
+        SpO2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                SpO2KeyPressed(evt);
+            }
+        });
+
+        jLabel22.setText("GCS (E,V,M) :");
+
+        TGCS.setFocusTraversalPolicyProvider(true);
+        TGCS.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TGCSKeyPressed(evt);
+            }
+        });
+
+        jLabel29.setText("Kesadaran :");
+
+        cmbKesadaran.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Compos Mentis", "Somnolence", "Sopor", "Coma" }));
+        cmbKesadaran.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbKesadaran.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbKesadaranKeyPressed(evt);
+            }
+        });
+
+        LingkarPerut.setHighlighter(null);
+        LingkarPerut.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                LingkarPerutKeyPressed(evt);
+            }
+        });
+
+        jLabel25.setText("L.P. (Cm) :");
+
+        jLabel15.setText("Alergi :");
+
+        TAlergi.setHighlighter(null);
+        TAlergi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TAlergiKeyPressed(evt);
+            }
+        });
+
+        BtnAll.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/refresh.png"))); // NOI18N
+        BtnAll.setMnemonic('M');
+        BtnAll.setText("Refresh");
+        BtnAll.setToolTipText("Alt+M");
+        BtnAll.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnAll.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnAllActionPerformed(evt);
+            }
+        });
+        BtnAll.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnAllKeyPressed(evt);
+            }
+        });
+
+        jLabel11.setText("Record :");
+        jLabel11.setPreferredSize(new java.awt.Dimension(95, 30));
+
+        LCount.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        LCount.setText("0");
+        LCount.setPreferredSize(new java.awt.Dimension(87, 30));
+
+        BtnHapus.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/stop_f2.png"))); // NOI18N
+        BtnHapus.setMnemonic('H');
+        BtnHapus.setText("Hapus");
+        BtnHapus.setToolTipText("Alt+H");
+        BtnHapus.setPreferredSize(new java.awt.Dimension(100, 30));
+        BtnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnHapusActionPerformed(evt);
+            }
+        });
+        BtnHapus.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                BtnHapusKeyPressed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelGlass1Layout = new javax.swing.GroupLayout(panelGlass1);
         panelGlass1.setLayout(panelGlass1Layout);
         panelGlass1Layout.setHorizontalGroup(
             panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelGlass1Layout.createSequentialGroup()
-                .addGap(17, 17, 17)
                 .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addComponent(KdPeg, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -583,18 +1018,187 @@ public class ERMrspw extends javax.swing.JFrame {
                 .addComponent(TPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addComponent(BtnSeekPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(panelGlass1Layout.createSequentialGroup()
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelGlass1Layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(BtnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BtnAll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(LCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BtnHapus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelGlass1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(panelGlass1Layout.createSequentialGroup()
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3)
+                                .addComponent(TSuhu, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(6, 6, 6)
+                                .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3)
+                                .addComponent(TTinggi, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(4, 4, 4)
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3)
+                                .addComponent(TBerat, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addGroup(panelGlass1Layout.createSequentialGroup()
+                                        .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(3, 3, 3)
+                                        .addComponent(scrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(panelGlass1Layout.createSequentialGroup()
+                                            .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(3, 3, 3)
+                                            .addComponent(Jabatan, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(3, 3, 3)
+                                            .addComponent(Btn5Soap, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(3, 3, 3)
+                                            .addComponent(BtnTemplatePemeriksaan, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(panelGlass1Layout.createSequentialGroup()
+                                            .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(3, 3, 3)
+                                            .addComponent(scrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addGroup(panelGlass1Layout.createSequentialGroup()
+                                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addGap(3, 3, 3)
+                                            .addComponent(scrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(panelGlass1Layout.createSequentialGroup()
+                                    .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(3, 3, 3)
+                                    .addComponent(scrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(panelGlass1Layout.createSequentialGroup()
+                                    .addComponent(jLabel53, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(3, 3, 3)
+                                    .addComponent(scrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(panelGlass1Layout.createSequentialGroup()
+                                    .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(3, 3, 3)
+                                    .addComponent(scrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(panelGlass1Layout.createSequentialGroup()
+                                    .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(3, 3, 3)
+                                    .addComponent(SpO2, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(5, 5, 5)
+                                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(3, 3, 3)
+                                    .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addGroup(panelGlass1Layout.createSequentialGroup()
+                                            .addGap(41, 41, 41)
+                                            .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(TGCS, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGap(3, 3, 3)
+                                    .addComponent(cmbKesadaran, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(panelGlass1Layout.createSequentialGroup()
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(3, 3, 3)
+                                    .addComponent(TTensi, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(6, 6, 6)
+                                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(3, 3, 3)
+                                    .addComponent(TRespirasi, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(4, 4, 4)
+                                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(3, 3, 3)
+                                    .addComponent(TNadi, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                    .addGroup(panelGlass1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3)
+                        .addComponent(LingkarPerut, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(3, 3, 3)
+                        .addComponent(TAlergi, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(62, Short.MAX_VALUE))
         );
         panelGlass1Layout.setVerticalGroup(
             panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelGlass1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
+                .addContainerGap()
                 .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel37, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(KdPeg, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(TPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(BtnSeekPegawai, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(1016, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel41, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Jabatan, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(Btn5Soap, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(BtnTemplatePemeriksaan, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel28, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel26, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPane8, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel53, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPane9, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel56, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scrollPane10, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TSuhu, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TTinggi, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TBerat, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TTensi, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TRespirasi, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TNadi, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel54, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(SpO2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel29, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TGCS, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cmbKesadaran, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(LingkarPerut, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TAlergi, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(79, 79, 79)
+                .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(BtnSimpan, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BtnAll, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelGlass1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(LCount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(BtnHapus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(473, Short.MAX_VALUE))
         );
 
         internalFrame3.add(panelGlass1, java.awt.BorderLayout.CENTER);
@@ -715,20 +1319,285 @@ public class ERMrspw extends javax.swing.JFrame {
     }//GEN-LAST:event_TNoRwActionPerformed
 
     private void KdPegKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_KdPegKeyPressed
-        if(evt.getKeyCode()==KeyEvent.VK_PAGE_DOWN){
+        if (evt.getKeyCode() == KeyEvent.VK_PAGE_DOWN) {
             TPegawai.setText(pegawai.tampil3(KdPeg.getText()));
-        }else if(evt.getKeyCode()==KeyEvent.VK_UP){
+        } else if (evt.getKeyCode() == KeyEvent.VK_UP) {
             BtnSeekPegawaiActionPerformed(null);
+        } else {
+            Valid.pindah(evt, TNoRw, TNoRw);
         }
     }//GEN-LAST:event_KdPegKeyPressed
 
     private void BtnSeekPegawaiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSeekPegawaiActionPerformed
         akses.setform("DlgRawatJalan");
         pegawai.emptTeks();
-        pegawai.setSize(internalFrame1.getWidth()-20,internalFrame1.getHeight()-20);
+        pegawai.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
         pegawai.setLocationRelativeTo(internalFrame1);
         pegawai.setVisible(true);
     }//GEN-LAST:event_BtnSeekPegawaiActionPerformed
+
+    private void Btn5SoapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn5SoapActionPerformed
+        if (TPasien.getText().trim().equals("") || TNoRw.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+//            TCari.requestFocus();
+        } else if (TPegawai.getText().trim().equals("") || KdPeg.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu petugas/dokter pemberi asuhan...!!!");
+//            TCari.requestFocus();
+        } else {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            soapterakhir.setNoRM(TNoRM.getText(), KdPeg.getText(), "Ralan");
+            soapterakhir.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            soapterakhir.setLocationRelativeTo(internalFrame1);
+            soapterakhir.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }//GEN-LAST:event_Btn5SoapActionPerformed
+
+    private void BtnTemplatePemeriksaanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTemplatePemeriksaanActionPerformed
+        if (TPasien.getText().trim().equals("") || TNoRw.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu dengan menklik data pada table...!!!");
+//            TCari.requestFocus();
+        } else if (TPegawai.getText().trim().equals("") || KdPeg.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(null, "Maaf, Silahkan anda pilih dulu dokter pemberi asuhan...!!!");
+//            TCari.requestFocus();
+        } else {
+            int jmlparsial = 0;
+            if (aktifkanparsial.equals("yes")) {
+                jmlparsial = Sequel.cariInteger("select count(set_input_parsial.kd_pj) from set_input_parsial where set_input_parsial.kd_pj=?", Sequel.cariIsi("select reg_periksa.kd_pj from reg_periksa where reg_periksa.no_rawat=?", TNoRw.getText()));
+            }
+            if (jmlparsial > 0) {
+                inputTemplate();
+            } else {
+                if (Sequel.cariRegistrasi(TNoRw.getText()) > 0) {
+                    JOptionPane.showMessageDialog(rootPane, "Data billing sudah terverifikasi.\nSilahkan hubungi bagian kasir/keuangan ..!!");
+//                    TCari.requestFocus();
+                } else {
+                    inputTemplate();
+                }
+            }
+        }
+    }//GEN-LAST:event_BtnTemplatePemeriksaanActionPerformed
+
+    private void TKeluhanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TKeluhanKeyPressed
+        Valid.pindah2(evt, KdPeg, TPemeriksaan);
+    }//GEN-LAST:event_TKeluhanKeyPressed
+
+    private void TPemeriksaanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TPemeriksaanKeyPressed
+//        Valid.pindah2(evt,TKeluhan,TSuhu);
+    }//GEN-LAST:event_TPemeriksaanKeyPressed
+
+    private void TPenilaianKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TPenilaianKeyPressed
+//        Valid.pindah2(evt,TAlergi,TindakLanjut);
+    }//GEN-LAST:event_TPenilaianKeyPressed
+
+    private void TindakLanjutKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TindakLanjutKeyPressed
+        Valid.pindah2(evt, TPenilaian, TInstruksi);
+    }//GEN-LAST:event_TindakLanjutKeyPressed
+
+    private void TInstruksiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TInstruksiKeyPressed
+        Valid.pindah2(evt, TindakLanjut, TEvaluasi);
+    }//GEN-LAST:event_TInstruksiKeyPressed
+
+    private void TEvaluasiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TEvaluasiKeyPressed
+//        Valid.pindah2(evt,TInstruksi,BtnSimpan);
+    }//GEN-LAST:event_TEvaluasiKeyPressed
+
+    private void BtnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnSimpanActionPerformed
+        if (TNoRw.getText().trim().equals("") || TPasien.getText().trim().equals("")) {
+            Valid.textKosong(TNoRw, "No.Rawat");
+        } else {
+            if ((!TKeluhan.getText().trim().equals("")) || (!TPemeriksaan.getText().trim().equals("")) || (!TSuhu.getText().trim().equals(""))
+                    || (!TTensi.getText().trim().equals("")) || (!TAlergi.getText().trim().equals("")) || (!TTinggi.getText().trim().equals(""))
+                    || (!TBerat.getText().trim().equals("")) || (!TRespirasi.getText().trim().equals("")) || (!TNadi.getText().trim().equals(""))
+                    || (!TGCS.getText().trim().equals("")) || (!TindakLanjut.getText().trim().equals("")) || (!TPenilaian.getText().trim().equals(""))
+                    || (!TInstruksi.getText().trim().equals("")) || (!SpO2.getText().trim().equals("")) || (!TEvaluasi.getText().trim().equals(""))) {
+                if (KdPeg.getText().trim().equals("") || TPegawai.getText().trim().equals("")) {
+                    Valid.textKosong(KdPeg, "Dokter/Paramedis masih kosong...!!");
+                } else {
+                    if (akses.getkode().equals("Admin Utama")) {
+                        if (Sequel.menyimpantf("pemeriksaan_ralan", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Data", 21, new String[]{
+                            TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(),
+                            TSuhu.getText(), TTensi.getText(), TNadi.getText(), TRespirasi.getText(), TTinggi.getText(), TBerat.getText(),
+                            SpO2.getText(), TGCS.getText(), cmbKesadaran.getSelectedItem().toString(), TKeluhan.getText(), TPemeriksaan.getText(), TAlergi.getText(),
+                            LingkarPerut.getText(), TindakLanjut.getText(), TPenilaian.getText(), TInstruksi.getText(), TEvaluasi.getText(), KdPeg.getText()}) == true) {
+//                            tabModeRiwayatSOAP.addRow(new Object[]{
+//                                false, TNoRw.getText(), TNoRM.getText(), TPasien.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(),
+//                                TSuhu.getText(), TTensi.getText(), TNadi.getText(), TRespirasi.getText(), TTinggi.getText(), TBerat.getText(), SpO2.getText(), TGCS.getText(), cmbKesadaran.getSelectedItem().toString(),
+//                                TKeluhan.getText(), TPemeriksaan.getText(), TAlergi.getText(), LingkarPerut.getText(), TindakLanjut.getText(), TPenilaian.getText(), TInstruksi.getText(), TEvaluasi.getText(),
+//                                KdPeg.getText(), TPegawai.getText(), Jabatan.getText()
+//                            });
+                            TSuhu.setText("");
+                            TTensi.setText("");
+                            TNadi.setText("");
+                            TRespirasi.setText("");
+                            TTinggi.setText("");
+                            TBerat.setText("");
+                            TGCS.setText("");
+                            TKeluhan.setText("");
+                            TPemeriksaan.setText("");
+                            TAlergi.setText("");
+                            LingkarPerut.setText("");
+                            TindakLanjut.setText("");
+                            TPenilaian.setText("");
+                            TInstruksi.setText("");
+                            SpO2.setText("");
+                            TEvaluasi.setText("");
+                            cmbKesadaran.setSelectedIndex(0);
+                            LCount.setText("" + tabModeRiwayatSOAP.getRowCount());
+                            Notifications.getInstance().show(Notifications.Type.SUCCESS,Notifications.Location.TOP_RIGHT, "Data Berhasil Disimpan");
+                            tampilRiwayatSOAP();
+                        }
+                    } else {
+                        if (akses.getkode().equals(KdPeg.getText())) {
+                            if (Sequel.menyimpantf("pemeriksaan_ralan", "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?", "Data", 21, new String[]{
+                                TNoRw.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(),
+                                TSuhu.getText(), TTensi.getText(), TNadi.getText(), TRespirasi.getText(), TTinggi.getText(), TBerat.getText(),
+                                SpO2.getText(), TGCS.getText(), cmbKesadaran.getSelectedItem().toString(), TKeluhan.getText(), TPemeriksaan.getText(), TAlergi.getText(),
+                                LingkarPerut.getText(), TindakLanjut.getText(), TPenilaian.getText(), TInstruksi.getText(), TEvaluasi.getText(), KdPeg.getText()}) == true) {
+//                                tabModePemeriksaan.addRow(new Object[]{
+//                                    false, TNoRw.getText(), TNoRM.getText(), TPasien.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(),
+//                                    TSuhu.getText(), TTensi.getText(), TNadi.getText(), TRespirasi.getText(), TTinggi.getText(), TBerat.getText(), SpO2.getText(), TGCS.getText(), cmbKesadaran.getSelectedItem().toString(),
+//                                    TKeluhan.getText(), TPemeriksaan.getText(), TAlergi.getText(), LingkarPerut.getText(), TindakLanjut.getText(), TPenilaian.getText(), TInstruksi.getText(), TEvaluasi.getText(),
+//                                    KdPeg.getText(), TPegawai.getText(), Jabatan.getText()
+//                                });
+                                TSuhu.setText("");
+                                TTensi.setText("");
+                                TNadi.setText("");
+                                TRespirasi.setText("");
+                                TTinggi.setText("");
+                                TBerat.setText("");
+                                TGCS.setText("");
+                                TKeluhan.setText("");
+                                TPemeriksaan.setText("");
+                                TAlergi.setText("");
+                                LingkarPerut.setText("");
+                                TindakLanjut.setText("");
+                                TPenilaian.setText("");
+                                TInstruksi.setText("");
+                                SpO2.setText("");
+                                TEvaluasi.setText("");
+                                cmbKesadaran.setSelectedIndex(0);
+                                LCount.setText("" + tabModeRiwayatSOAP.getRowCount());
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS,Notifications.Location.TOP_RIGHT, "Data Berhasil Disimpan");
+                                tampilRiwayatSOAP();
+                            }
+                            
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Hanya bisa disimpan oleh dokter/petugas yang bersangkutan..!!");
+                        }
+                    }
+                }
+            }
+        }
+    }//GEN-LAST:event_BtnSimpanActionPerformed
+
+    private void BtnSimpanKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnSimpanKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_SPACE) {
+            BtnSimpanActionPerformed(null);
+        } else {
+
+        }
+    }//GEN-LAST:event_BtnSimpanKeyPressed
+
+    private void TSuhuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TSuhuKeyPressed
+        Valid.pindah(evt, TPemeriksaan, TTinggi);
+    }//GEN-LAST:event_TSuhuKeyPressed
+
+    private void TTinggiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TTinggiKeyPressed
+        Valid.pindah(evt, TSuhu, TBerat);
+    }//GEN-LAST:event_TTinggiKeyPressed
+
+    private void TBeratKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TBeratKeyPressed
+        Valid.pindah(evt, TTinggi, TTensi);
+    }//GEN-LAST:event_TBeratKeyPressed
+
+    private void TTensiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TTensiKeyPressed
+        Valid.pindah(evt, TBerat, TRespirasi);
+    }//GEN-LAST:event_TTensiKeyPressed
+
+    private void TRespirasiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TRespirasiKeyPressed
+        Valid.pindah(evt, TTensi, TNadi);
+    }//GEN-LAST:event_TRespirasiKeyPressed
+
+    private void TNadiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNadiKeyPressed
+        Valid.pindah(evt, TRespirasi, SpO2);
+    }//GEN-LAST:event_TNadiKeyPressed
+
+    private void SpO2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SpO2KeyPressed
+        Valid.pindah(evt, TNadi, TGCS);
+    }//GEN-LAST:event_SpO2KeyPressed
+
+    private void TGCSKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TGCSKeyPressed
+        Valid.pindah(evt, TNadi, cmbKesadaran);
+    }//GEN-LAST:event_TGCSKeyPressed
+
+    private void cmbKesadaranKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbKesadaranKeyPressed
+        Valid.pindah(evt, TGCS, LingkarPerut);
+    }//GEN-LAST:event_cmbKesadaranKeyPressed
+
+    private void LingkarPerutKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_LingkarPerutKeyPressed
+        Valid.pindah(evt, cmbKesadaran, TAlergi);
+    }//GEN-LAST:event_LingkarPerutKeyPressed
+
+    private void TAlergiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TAlergiKeyPressed
+        Valid.pindah(evt, LingkarPerut, TPenilaian);
+    }//GEN-LAST:event_TAlergiKeyPressed
+
+    private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
+//        TCari.setText("");
+//        TCariPasien.setText("");
+        tampilRiwayatSOAP();
+        Notifications.getInstance().show(Notifications.Type.SUCCESS,Notifications.Location.TOP_RIGHT, "BERHASIL REFRESH DATA!");
+    }//GEN-LAST:event_BtnAllActionPerformed
+
+    private void BtnAllKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAllKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnAllActionPerformed(null);
+        }else{
+//            Valid.pindah(evt, BtnPrint, BtnKeluar);
+        }
+    }//GEN-LAST:event_BtnAllKeyPressed
+
+    private void BtnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnHapusActionPerformed
+        if(tabModeRiwayatSOAP.getRowCount()==0){
+                    JOptionPane.showMessageDialog(null,"Maaf, data sudah habis...!!!!");
+                    TNoRw.requestFocus();
+                }else{
+                    for(i=0;i<tbPemeriksaanSOAP.getRowCount();i++){
+                        if(tbPemeriksaanSOAP.getValueAt(i,0).toString().equals("true")){
+                            if(akses.getkode().equals("Admin Utama")){
+                                Sequel.queryu("delete from pemeriksaan_ralan where no_rawat='"+tbPemeriksaanSOAP.getValueAt(i,1).toString()+
+                                        "' and tgl_perawatan='"+tbPemeriksaanSOAP.getValueAt(i,2).toString()+
+                                        "' and jam_rawat='"+tbPemeriksaanSOAP.getValueAt(i,3).toString()+"' ");
+                                tabModeRiwayatSOAP.removeRow(i);
+                                i--;
+                                
+                                Notifications.getInstance().show(Notifications.Type.SUCCESS,Notifications.Location.TOP_RIGHT, "DATA BERHASIL DIHAPUS");
+                            }else{
+                                if(akses.getkode().equals(tbPemeriksaanSOAP.getValueAt(i,5).toString())){
+                               Sequel.queryu("delete from pemeriksaan_ralan where no_rawat='"+tbPemeriksaanSOAP.getValueAt(i,1).toString()+
+                                        "' and tgl_perawatan='"+tbPemeriksaanSOAP.getValueAt(i,2).toString()+
+                                        "' and jam_rawat='"+tbPemeriksaanSOAP.getValueAt(i,3).toString()+"' ");
+                                    tabModeRiwayatSOAP.removeRow(i);
+                                    i--;
+                                }else{
+                                    JOptionPane.showMessageDialog(null,"Hanya bisa dihapus oleh dokter/petugas yang bersangkutan..!!");
+                                }
+                            }
+                        }
+                    }
+                    LCount.setText(""+tabModeRiwayatSOAP.getRowCount());
+                }
+//        BtnBatalActionPerformed(evt);
+    }//GEN-LAST:event_BtnHapusActionPerformed
+
+    private void BtnHapusKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnHapusKeyPressed
+        if(evt.getKeyCode()==KeyEvent.VK_SPACE){
+            BtnHapusActionPerformed(null);
+        }else{
+//            Valid.pindah(evt, BtnBatal, BtnPrint);
+        }
+    }//GEN-LAST:event_BtnHapusKeyPressed
 
     /**
      * @param args the command line arguments
@@ -766,7 +1635,12 @@ public class ERMrspw extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private widget.Button Btn5Soap;
+    private widget.Button BtnAll;
+    private widget.Button BtnHapus;
     private widget.Button BtnSeekPegawai;
+    private widget.Button BtnSimpan;
+    private widget.Button BtnTemplatePemeriksaan;
     private widget.CekBox ChkInput1;
     private widget.CekBox ChkInput2;
     private widget.CekBox ChkInput3;
@@ -774,24 +1648,62 @@ public class ERMrspw extends javax.swing.JFrame {
     private widget.CekBox ChkJln;
     private widget.Tanggal DTPTgl;
     private widget.PanelBiasa FormInput;
+    private widget.TextBox Jabatan;
     private widget.TextBox KdPeg;
+    private widget.Label LCount;
+    private widget.TextBox LingkarPerut;
+    private widget.TextBox SpO2;
+    private widget.TextBox TAlergi;
+    private widget.TextBox TBerat;
+    private widget.TextArea TEvaluasi;
+    private widget.TextBox TGCS;
+    private widget.TextArea TInstruksi;
     private widget.TextBox TJenisKelamin;
+    private widget.TextArea TKeluhan;
+    private widget.TextBox TNadi;
     private widget.TextBox TNoRM;
     private widget.TextBox TNoRw;
     private widget.TextBox TPasien;
     private widget.TextBox TPegawai;
+    private widget.TextArea TPemeriksaan;
+    private widget.TextArea TPenilaian;
+    private widget.TextBox TRespirasi;
+    private widget.TextBox TSuhu;
+    private widget.TextBox TTensi;
+    private widget.TextBox TTinggi;
+    private widget.TextArea TindakLanjut;
     private widget.ComboBox cmbDtk;
     private widget.ComboBox cmbJam;
+    private widget.ComboBox cmbKesadaran;
     private widget.ComboBox cmbMnt;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame2;
     private widget.InternalFrame internalFrame3;
+    private widget.Label jLabel10;
+    private widget.Label jLabel11;
+    private widget.Label jLabel15;
+    private widget.Label jLabel16;
+    private widget.Label jLabel17;
+    private widget.Label jLabel18;
+    private widget.Label jLabel20;
+    private widget.Label jLabel22;
     private widget.Label jLabel23;
+    private widget.Label jLabel25;
+    private widget.Label jLabel26;
+    private widget.Label jLabel28;
+    private widget.Label jLabel29;
     private widget.Label jLabel3;
     private widget.Label jLabel37;
     private widget.Label jLabel4;
+    private widget.Label jLabel41;
     private widget.Label jLabel5;
+    private widget.Label jLabel53;
+    private widget.Label jLabel54;
+    private widget.Label jLabel56;
     private widget.Label jLabel6;
+    private widget.Label jLabel7;
+    private widget.Label jLabel8;
+    private widget.Label jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -802,9 +1714,15 @@ public class ERMrspw extends javax.swing.JFrame {
     private widget.PanelBiasa panelBiasa4;
     private widget.panelGlass panelGlass1;
     private widget.ScrollPane scrollPane1;
+    private widget.ScrollPane scrollPane10;
     private widget.ScrollPane scrollPane2;
     private widget.ScrollPane scrollPane3;
     private widget.ScrollPane scrollPane4;
+    private widget.ScrollPane scrollPane5;
+    private widget.ScrollPane scrollPane6;
+    private widget.ScrollPane scrollPane7;
+    private widget.ScrollPane scrollPane8;
+    private widget.ScrollPane scrollPane9;
     private widget.Table tbPembelian;
     private widget.Table tbPemeriksaanSOAP;
     // End of variables declaration//GEN-END:variables
@@ -894,6 +1812,21 @@ public class ERMrspw extends javax.swing.JFrame {
         tampilRiwayatSOAP();
     }
 
+    private void inputTemplate() {
+        if (dokter.tampil3(KdPeg.getText()).equals("")) {
+            JOptionPane.showMessageDialog(null, "Template pemeriksaan hanya untuk dokter...!!");
+        } else {
+            this.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+            MasterCariTemplatePemeriksaan templatepemeriksaan = new MasterCariTemplatePemeriksaan(null, false);
+            templatepemeriksaan.setSize(internalFrame1.getWidth() - 20, internalFrame1.getHeight() - 20);
+            templatepemeriksaan.setLocationRelativeTo(internalFrame1);
+            templatepemeriksaan.isCek();
+            templatepemeriksaan.setDokter(KdPeg.getText(), Valid.SetTgl(DTPTgl.getSelectedItem() + ""), cmbJam.getSelectedItem() + ":" + cmbMnt.getSelectedItem() + ":" + cmbDtk.getSelectedItem(), TNoRw.getText(), TNoRM.getText());
+            templatepemeriksaan.tampil();
+            templatepemeriksaan.setVisible(true);
+            this.setCursor(Cursor.getDefaultCursor());
+        }
+    }
 
     private void tampilPembelianObat() {
         Valid.tabelKosong(tabModePembelian);
@@ -914,7 +1847,7 @@ public class ERMrspw extends javax.swing.JFrame {
                         i + "", rs.getString("kode_brng"), rs.getString("nama_brng"), rs.getString("jumlah"), rs.getString("tgl_jual")
                     });
                 }
-                
+
                 logger.info("Berhasil Fetching Data Obat dengan No RM :" + TNoRM.getText().trim());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -929,28 +1862,29 @@ public class ERMrspw extends javax.swing.JFrame {
         i = 0;
 
         try {
-            ps = koneksi.prepareStatement("select reg_periksa.tgl_registrasi, reg_periksa.status_lanjut, "
-                    + "CONCAT(pemeriksaan_ralan.tgl_perawatan, '\n', pemeriksaan_ralan.jam_rawat, '\n', pemeriksaan_ralan.suhu_tubuh, '\n',\n"
-                    + "pemeriksaan_ralan.tensi, '\n', pemeriksaan_ralan.nadi, '\n', pemeriksaan_ralan.respirasi, '\n',\n"
-                    + "pemeriksaan_ralan.tinggi, '\n', pemeriksaan_ralan.berat, '\n', pemeriksaan_ralan.gcs, '\n',\n"
-                    + "pemeriksaan_ralan.spo2, '\n', pemeriksaan_ralan.kesadaran, '\n', pemeriksaan_ralan.keluhan, '\n',\n"
-                    + "pemeriksaan_ralan.pemeriksaan, '\n', pemeriksaan_ralan.alergi, '\n', pemeriksaan_ralan.lingkar_perut, '\n',\n"
-                    + "pemeriksaan_ralan.rtl, '\n', pemeriksaan_ralan.penilaian, '\n', pemeriksaan_ralan.instruksi, '\n',\n"
-                    + "pemeriksaan_ralan.evaluasi, '\n', pemeriksaan_ralan.nip, '\n') AS SOAPIE\n"
+            ps = koneksi.prepareStatement("select pemeriksaan_ralan.no_rawat, reg_periksa.tgl_registrasi, reg_periksa.status_lanjut, "
+                    + "pemeriksaan_ralan.tgl_perawatan, pemeriksaan_ralan.jam_rawat, "
+                    + "CONCAT(pemeriksaan_ralan.suhu_tubuh,\n"
+                    + "pemeriksaan_ralan.tensi, pemeriksaan_ralan.nadi, pemeriksaan_ralan.respirasi,\n"
+                    + "pemeriksaan_ralan.tinggi, pemeriksaan_ralan.berat, pemeriksaan_ralan.gcs,\n"
+                    + "pemeriksaan_ralan.spo2, pemeriksaan_ralan.kesadaran, pemeriksaan_ralan.keluhan,\n"
+                    + "pemeriksaan_ralan.pemeriksaan, pemeriksaan_ralan.alergi, pemeriksaan_ralan.lingkar_perut,\n"
+                    + "pemeriksaan_ralan.rtl, pemeriksaan_ralan.penilaian, pemeriksaan_ralan.instruksi,\n"
+                    + "pemeriksaan_ralan.evaluasi, pemeriksaan_ralan.nip) AS SOAPIE\n"
                     + "from pemeriksaan_ralan inner join reg_periksa on pemeriksaan_ralan.no_rawat = reg_periksa.no_rawat\n"
                     + "where reg_periksa.stts<>'Batal' and reg_periksa.no_rawat=? order by reg_periksa.tgl_registrasi desc");
             System.out.println("Nilai TNoRw " + TNoRw.getText());
             ps.setString(1, TNoRw.getText());
             try {
-                
-                rs = ps.executeQuery();
+
+                rs = ps.executeQuery(); 
 
                 while (rs.next()) {
-                    tabModeRiwayatSOAP.addRow(new String[]{
-                        rs.getString("tgl_registrasi"), rs.getString("status_lanjut"), rs.getString("SOAPIE")
+                    tabModeRiwayatSOAP.addRow(new Object[]{
+                        false ,rs.getString("no_rawat"), rs.getString("tgl_perawatan"),rs.getString("jam_rawat"), rs.getString("status_lanjut"), rs.getString("SOAPIE")
                     });
                 }
-                
+
                 logger.info("Berhasil Fetching Data SOAPIE dengan No RM :" + TNoRM.getText().trim());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -960,4 +1894,7 @@ public class ERMrspw extends javax.swing.JFrame {
         }
     }
 
+    private void getDataPemeriksaan() {
+
+    }
 }
