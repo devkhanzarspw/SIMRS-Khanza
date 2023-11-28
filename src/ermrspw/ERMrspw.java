@@ -60,6 +60,13 @@ public final class ERMrspw extends javax.swing.JFrame {
     public ERMrspw() {
         initComponents();
         setExtendedState(JFrame.MAXIMIZED_BOTH);
+        
+        int m_lebar = internalFrame1.getWidth(); //lebar 100%
+        double side = (m_lebar*0.3)/2;
+        System.out.println(m_lebar);
+        System.out.println((int)side);
+        panelBiasa3.setPreferredSize(new Dimension((int)Math.round(side),HEIGHT));
+        panelBiasa4.setPreferredSize(new Dimension((int)Math.round(side),HEIGHT));
 
         tabModeSoap = new DefaultTableModel(null, new Object[]{
             "P", "No.Rawat", "No.R.M.", "Nama Pasien", "Perawatan/Tindakan", "Kode Dokter"}) {
@@ -98,7 +105,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         textBox1 = new widget.TextBox();
         internalFrame1 = new widget.InternalFrame();
         panelBiasa1 = new widget.PanelBiasa();
-        textBox2 = new widget.TextBox();
+        TAsuransi = new widget.TextBox();
         TPasien = new widget.TextBox();
         label1 = new widget.Label();
         label3 = new widget.Label();
@@ -107,7 +114,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         cmbDtk = new widget.ComboBox();
         DTPTgl = new widget.Tanggal();
         TNoRw = new widget.TextBox();
-        textBox6 = new widget.TextBox();
+        TPoli = new widget.TextBox();
         KdDok = new widget.TextBox();
         label4 = new widget.Label();
         label5 = new widget.Label();
@@ -122,11 +129,13 @@ public final class ERMrspw extends javax.swing.JFrame {
         label13 = new widget.Label();
         label14 = new widget.Label();
         TJk = new widget.TextBox();
-        textBox11 = new widget.TextBox();
-        textBox12 = new widget.TextBox();
+        TUmur = new widget.TextBox();
+        TTglLhr = new widget.TextBox();
         TJabatan = new widget.TextBox();
         label15 = new widget.Label();
         label16 = new widget.Label();
+        PanelWall = new usu.widget.glass.PanelGlass();
+        label11 = new widget.Label();
         panelBiasa3 = new widget.PanelBiasa();
         internalFrame2 = new widget.InternalFrame();
         PanelInput = new javax.swing.JPanel();
@@ -145,6 +154,51 @@ public final class ERMrspw extends javax.swing.JFrame {
         table3 = new widget.Table();
         panelBiasa4 = new widget.PanelBiasa();
         panelBiasa2 = new widget.PanelBiasa();
+        internalFrame5 = new widget.InternalFrame();
+        jPanel1 = new javax.swing.JPanel();
+        ChkSoap1 = new widget.CekBox();
+        panelisi1 = new widget.panelisi();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        TKeluhan = new widget.TextArea();
+        label2 = new widget.Label();
+        label17 = new widget.Label();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        TPemeriksaan = new widget.TextArea();
+        label18 = new widget.Label();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        TPenilaian = new widget.TextArea();
+        label19 = new widget.Label();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        TindakLanjut = new widget.TextArea();
+        label20 = new widget.Label();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        TInstruksi = new widget.TextArea();
+        label21 = new widget.Label();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        TEvaluasi = new widget.TextArea();
+        jLabel7 = new widget.Label();
+        TSuhu = new widget.TextBox();
+        jLabel17 = new widget.Label();
+        TTinggi = new widget.TextBox();
+        jLabel16 = new widget.Label();
+        TBerat = new widget.TextBox();
+        jLabel4 = new widget.Label();
+        TTensi = new widget.TextBox();
+        jLabel20 = new widget.Label();
+        TRespirasi = new widget.TextBox();
+        jLabel18 = new widget.Label();
+        TNadi = new widget.TextBox();
+        jLabel54 = new widget.Label();
+        SpO2 = new widget.TextBox();
+        jLabel22 = new widget.Label();
+        TGCS = new widget.TextBox();
+        jLabel29 = new widget.Label();
+        cmbKesadaran = new widget.ComboBox();
+        jLabel25 = new widget.Label();
+        LingkarPerut = new widget.TextBox();
+        jLabel15 = new widget.Label();
+        TAlergi = new widget.TextBox();
+        button1 = new widget.Button();
 
         textBox1.setText("textBox1");
 
@@ -155,8 +209,8 @@ public final class ERMrspw extends javax.swing.JFrame {
 
         panelBiasa1.setPreferredSize(new java.awt.Dimension(1355, 150));
         panelBiasa1.setLayout(null);
-        panelBiasa1.add(textBox2);
-        textBox2.setBounds(590, 100, 290, 24);
+        panelBiasa1.add(TAsuransi);
+        TAsuransi.setBounds(590, 100, 180, 24);
         panelBiasa1.add(TPasien);
         TPasien.setBounds(590, 40, 290, 24);
 
@@ -166,9 +220,9 @@ public final class ERMrspw extends javax.swing.JFrame {
         label1.setBounds(510, 10, 60, 14);
 
         label3.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        label3.setText("Nama");
+        label3.setText("No. RM :");
         panelBiasa1.add(label3);
-        label3.setBounds(510, 40, 60, 14);
+        label3.setBounds(740, 10, 50, 10);
 
         cmbJam.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23" }));
         cmbJam.setPreferredSize(new java.awt.Dimension(62, 28));
@@ -201,7 +255,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         cmbDtk.setBounds(1690, 10, 62, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "24-11-2023" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-11-2023" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setOpaque(false);
         DTPTgl.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -212,15 +266,15 @@ public final class ERMrspw extends javax.swing.JFrame {
         panelBiasa1.add(DTPTgl);
         DTPTgl.setBounds(1450, 10, 90, 23);
         panelBiasa1.add(TNoRw);
-        TNoRw.setBounds(590, 10, 180, 24);
+        TNoRw.setBounds(590, 10, 140, 24);
 
-        textBox6.addActionListener(new java.awt.event.ActionListener() {
+        TPoli.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                textBox6ActionPerformed(evt);
+                TPoliActionPerformed(evt);
             }
         });
-        panelBiasa1.add(textBox6);
-        textBox6.setBounds(1000, 10, 250, 24);
+        panelBiasa1.add(TPoli);
+        TPoli.setBounds(1000, 10, 250, 24);
         panelBiasa1.add(KdDok);
         KdDok.setBounds(1000, 40, 70, 24);
 
@@ -263,13 +317,15 @@ public final class ERMrspw extends javax.swing.JFrame {
         label12.setText(":");
         panelBiasa1.add(label12);
         label12.setBounds(580, 10, 10, 14);
+
+        TNoRM.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         panelBiasa1.add(TNoRM);
-        TNoRM.setBounds(780, 10, 100, 24);
+        TNoRM.setBounds(790, 10, 90, 25);
         panelBiasa1.add(TDokter);
         TDokter.setBounds(1080, 40, 170, 24);
 
         label13.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        label13.setText("Jk/Umur");
+        label13.setText("Jk/Tgl/Umur");
         panelBiasa1.add(label13);
         label13.setBounds(510, 70, 60, 14);
 
@@ -279,10 +335,10 @@ public final class ERMrspw extends javax.swing.JFrame {
         label14.setBounds(580, 70, 10, 14);
         panelBiasa1.add(TJk);
         TJk.setBounds(590, 70, 90, 24);
-        panelBiasa1.add(textBox11);
-        textBox11.setBounds(780, 70, 100, 24);
-        panelBiasa1.add(textBox12);
-        textBox12.setBounds(690, 70, 80, 24);
+        panelBiasa1.add(TUmur);
+        TUmur.setBounds(780, 70, 100, 24);
+        panelBiasa1.add(TTglLhr);
+        TTglLhr.setBounds(690, 70, 80, 24);
         panelBiasa1.add(TJabatan);
         TJabatan.setBounds(1000, 70, 250, 24);
 
@@ -296,10 +352,26 @@ public final class ERMrspw extends javax.swing.JFrame {
         panelBiasa1.add(label16);
         label16.setBounds(930, 70, 50, 14);
 
+        PanelWall.setBackground(new java.awt.Color(255, 255, 255));
+        PanelWall.setBackgroundImage(new javax.swing.ImageIcon(getClass().getResource("/picture/userg.png"))); // NOI18N
+        PanelWall.setBackgroundImageType(usu.widget.constan.BackgroundConstan.BACKGROUND_IMAGE_STRECT);
+        PanelWall.setOpaque(true);
+        PanelWall.setPreferredSize(new java.awt.Dimension(200, 200));
+        PanelWall.setRound(false);
+        PanelWall.setWarna(new java.awt.Color(110, 110, 110));
+        PanelWall.setLayout(null);
+        panelBiasa1.add(PanelWall);
+        PanelWall.setBounds(360, 10, 120, 110);
+
+        label11.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label11.setText("Nama");
+        panelBiasa1.add(label11);
+        label11.setBounds(510, 40, 60, 14);
+
         internalFrame1.add(panelBiasa1, java.awt.BorderLayout.PAGE_START);
 
         panelBiasa3.setBorder(javax.swing.BorderFactory.createTitledBorder("Riwayat Perawatan Pasien"));
-        panelBiasa3.setPreferredSize(new java.awt.Dimension(500, 300));
+        panelBiasa3.setPreferredSize(new java.awt.Dimension(300, 300));
 
         internalFrame2.setBorder(null);
         internalFrame2.setDoubleBuffered(false);
@@ -422,7 +494,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         panelBiasa3.setLayout(panelBiasa3Layout);
         panelBiasa3Layout.setHorizontalGroup(
             panelBiasa3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE)
+            .addComponent(internalFrame2, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
             .addComponent(internalFrame3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(internalFrame4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -434,10 +506,10 @@ public final class ERMrspw extends javax.swing.JFrame {
                 .addComponent(internalFrame3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(internalFrame4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 499, Short.MAX_VALUE))
         );
 
-        internalFrame1.add(panelBiasa3, java.awt.BorderLayout.LINE_START);
+        internalFrame1.add(panelBiasa3, java.awt.BorderLayout.WEST);
 
         panelBiasa4.setBorder(javax.swing.BorderFactory.createTitledBorder("Hasil Asesmen Terkini"));
 
@@ -449,22 +521,286 @@ public final class ERMrspw extends javax.swing.JFrame {
         );
         panelBiasa4Layout.setVerticalGroup(
             panelBiasa4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 712, Short.MAX_VALUE)
+            .addGap(0, 586, Short.MAX_VALUE)
         );
 
-        internalFrame1.add(panelBiasa4, java.awt.BorderLayout.EAST);
+        internalFrame1.add(panelBiasa4, java.awt.BorderLayout.LINE_END);
 
         panelBiasa2.setBorder(javax.swing.BorderFactory.createTitledBorder("Form ERM"));
+        panelBiasa2.setVerifyInputWhenFocusTarget(false);
+
+        internalFrame5.setLayout(new java.awt.BorderLayout());
+
+        jPanel1.setPreferredSize(new java.awt.Dimension(539, 25));
+        jPanel1.setLayout(new java.awt.BorderLayout());
+
+        ChkSoap1.setBackground(new java.awt.Color(51, 153, 255));
+        ChkSoap1.setForeground(new java.awt.Color(255, 255, 255));
+        ChkSoap1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/143.png"))); // NOI18N
+        ChkSoap1.setText("Form Input SOAPIE");
+        ChkSoap1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        ChkSoap1.setPreferredSize(new java.awt.Dimension(163, 25));
+        ChkSoap1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ChkSoap1ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ChkSoap1, java.awt.BorderLayout.PAGE_START);
+
+        panelisi1.setLayout(null);
+
+        TKeluhan.setBorder(null);
+        TKeluhan.setColumns(20);
+        TKeluhan.setRows(5);
+        TKeluhan.setOpaque(true);
+        jScrollPane1.setViewportView(TKeluhan);
+
+        panelisi1.add(jScrollPane1);
+        jScrollPane1.setBounds(11, 30, 380, 60);
+
+        label2.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label2.setText("Subjek :");
+        panelisi1.add(label2);
+        label2.setBounds(11, 10, 60, 14);
+
+        label17.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label17.setText("Objek :");
+        panelisi1.add(label17);
+        label17.setBounds(11, 100, 60, 14);
+
+        TPemeriksaan.setBorder(null);
+        TPemeriksaan.setColumns(20);
+        TPemeriksaan.setRows(5);
+        TPemeriksaan.setOpaque(true);
+        jScrollPane2.setViewportView(TPemeriksaan);
+
+        panelisi1.add(jScrollPane2);
+        jScrollPane2.setBounds(11, 120, 380, 60);
+
+        label18.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label18.setText("Asesmen :");
+        panelisi1.add(label18);
+        label18.setBounds(11, 190, 60, 14);
+
+        TPenilaian.setBorder(null);
+        TPenilaian.setColumns(20);
+        TPenilaian.setRows(5);
+        TPenilaian.setOpaque(true);
+        jScrollPane3.setViewportView(TPenilaian);
+
+        panelisi1.add(jScrollPane3);
+        jScrollPane3.setBounds(11, 210, 380, 60);
+
+        label19.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label19.setText("Plan :");
+        panelisi1.add(label19);
+        label19.setBounds(420, 10, 120, 14);
+
+        TindakLanjut.setBorder(null);
+        TindakLanjut.setColumns(20);
+        TindakLanjut.setRows(5);
+        TindakLanjut.setOpaque(true);
+        jScrollPane4.setViewportView(TindakLanjut);
+
+        panelisi1.add(jScrollPane4);
+        jScrollPane4.setBounds(420, 30, 380, 60);
+
+        label20.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label20.setText("Instruksi :");
+        panelisi1.add(label20);
+        label20.setBounds(420, 100, 120, 14);
+
+        TInstruksi.setBorder(null);
+        TInstruksi.setColumns(20);
+        TInstruksi.setRows(5);
+        TInstruksi.setOpaque(true);
+        jScrollPane5.setViewportView(TInstruksi);
+
+        panelisi1.add(jScrollPane5);
+        jScrollPane5.setBounds(420, 120, 380, 60);
+
+        label21.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        label21.setText("Evaluasi :");
+        panelisi1.add(label21);
+        label21.setBounds(420, 190, 120, 14);
+
+        TEvaluasi.setBorder(null);
+        TEvaluasi.setColumns(20);
+        TEvaluasi.setRows(5);
+        TEvaluasi.setOpaque(true);
+        jScrollPane6.setViewportView(TEvaluasi);
+
+        panelisi1.add(jScrollPane6);
+        jScrollPane6.setBounds(420, 210, 380, 60);
+
+        jLabel7.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel7.setText("Suhu (°C) :");
+        panelisi1.add(jLabel7);
+        jLabel7.setBounds(11, 280, 70, 23);
+
+        TSuhu.setFocusTraversalPolicyProvider(true);
+        TSuhu.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TSuhuKeyPressed(evt);
+            }
+        });
+        panelisi1.add(TSuhu);
+        TSuhu.setBounds(10, 300, 55, 23);
+
+        jLabel17.setText("Tinggi Badan (Cm) :");
+        panelisi1.add(jLabel17);
+        jLabel17.setBounds(80, 280, 100, 23);
+
+        TTinggi.setFocusTraversalPolicyProvider(true);
+        TTinggi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TTinggiKeyPressed(evt);
+            }
+        });
+        panelisi1.add(TTinggi);
+        TTinggi.setBounds(90, 300, 90, 23);
+
+        jLabel16.setText("Berat (Kg) :");
+        panelisi1.add(jLabel16);
+        jLabel16.setBounds(190, 280, 79, 23);
+
+        TBerat.setHighlighter(null);
+        TBerat.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TBeratKeyPressed(evt);
+            }
+        });
+        panelisi1.add(TBerat);
+        TBerat.setBounds(210, 300, 64, 23);
+
+        jLabel4.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel4.setText("Tensi :");
+        panelisi1.add(jLabel4);
+        jLabel4.setBounds(10, 330, 70, 23);
+
+        TTensi.setHighlighter(null);
+        TTensi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TTensiKeyPressed(evt);
+            }
+        });
+        panelisi1.add(TTensi);
+        TTensi.setBounds(10, 350, 55, 23);
+
+        jLabel20.setText("Respirasi (/menit) :");
+        panelisi1.add(jLabel20);
+        jLabel20.setBounds(90, 330, 100, 23);
+
+        TRespirasi.setHighlighter(null);
+        TRespirasi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TRespirasiKeyPressed(evt);
+            }
+        });
+        panelisi1.add(TRespirasi);
+        TRespirasi.setBounds(100, 350, 90, 23);
+
+        jLabel18.setText("Nadi (/menit) :");
+        panelisi1.add(jLabel18);
+        jLabel18.setBounds(210, 330, 79, 23);
+
+        TNadi.setFocusTraversalPolicyProvider(true);
+        TNadi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TNadiKeyPressed(evt);
+            }
+        });
+        panelisi1.add(TNadi);
+        TNadi.setBounds(220, 350, 70, 23);
+
+        jLabel54.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel54.setText("SpO2 (%) :");
+        panelisi1.add(jLabel54);
+        jLabel54.setBounds(310, 280, 70, 23);
+
+        SpO2.setFocusTraversalPolicyProvider(true);
+        SpO2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                SpO2KeyPressed(evt);
+            }
+        });
+        panelisi1.add(SpO2);
+        SpO2.setBounds(310, 300, 60, 23);
+
+        jLabel22.setText("GCS (E,V,M) :");
+        panelisi1.add(jLabel22);
+        jLabel22.setBounds(390, 280, 70, 23);
+
+        TGCS.setFocusTraversalPolicyProvider(true);
+        TGCS.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TGCSKeyPressed(evt);
+            }
+        });
+        panelisi1.add(TGCS);
+        TGCS.setBounds(390, 300, 70, 23);
+
+        jLabel29.setText("Kesadaran :");
+        panelisi1.add(jLabel29);
+        jLabel29.setBounds(470, 280, 70, 23);
+
+        cmbKesadaran.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Compos Mentis", "Somnolence", "Sopor", "Coma" }));
+        cmbKesadaran.setPreferredSize(new java.awt.Dimension(62, 28));
+        cmbKesadaran.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                cmbKesadaranKeyPressed(evt);
+            }
+        });
+        panelisi1.add(cmbKesadaran);
+        cmbKesadaran.setBounds(480, 300, 140, 23);
+
+        jLabel25.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        jLabel25.setText("L.P. (Cm) :");
+        panelisi1.add(jLabel25);
+        jLabel25.setBounds(310, 330, 90, 23);
+
+        LingkarPerut.setHighlighter(null);
+        LingkarPerut.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                LingkarPerutKeyPressed(evt);
+            }
+        });
+        panelisi1.add(LingkarPerut);
+        LingkarPerut.setBounds(310, 350, 100, 23);
+
+        jLabel15.setText("Alergi :");
+        panelisi1.add(jLabel15);
+        jLabel15.setBounds(400, 330, 70, 23);
+
+        TAlergi.setHighlighter(null);
+        TAlergi.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                TAlergiKeyPressed(evt);
+            }
+        });
+        panelisi1.add(TAlergi);
+        TAlergi.setBounds(430, 350, 190, 23);
+
+        button1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/picture/save-16x16.png"))); // NOI18N
+        button1.setText("Simpan");
+        panelisi1.add(button1);
+        button1.setBounds(10, 440, 110, 26);
+
+        jPanel1.add(panelisi1, java.awt.BorderLayout.CENTER);
+
+        internalFrame5.add(jPanel1, java.awt.BorderLayout.CENTER);
 
         javax.swing.GroupLayout panelBiasa2Layout = new javax.swing.GroupLayout(panelBiasa2);
         panelBiasa2.setLayout(panelBiasa2Layout);
         panelBiasa2Layout.setHorizontalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 946, Short.MAX_VALUE)
+            .addComponent(internalFrame5, javax.swing.GroupLayout.DEFAULT_SIZE, 817, Short.MAX_VALUE)
         );
         panelBiasa2Layout.setVerticalGroup(
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 712, Short.MAX_VALUE)
+            .addGroup(panelBiasa2Layout.createSequentialGroup()
+                .addComponent(internalFrame5, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 77, Short.MAX_VALUE))
         );
 
         internalFrame1.add(panelBiasa2, java.awt.BorderLayout.CENTER);
@@ -503,9 +839,57 @@ public final class ERMrspw extends javax.swing.JFrame {
 
     }//GEN-LAST:event_DTPTglKeyPressed
 
-    private void textBox6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_textBox6ActionPerformed
+    private void TPoliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TPoliActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_textBox6ActionPerformed
+    }//GEN-LAST:event_TPoliActionPerformed
+
+    private void ChkSoap1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ChkSoap1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ChkSoap1ActionPerformed
+
+    private void TSuhuKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TSuhuKeyPressed
+        Valid.pindah(evt,TPemeriksaan,TTinggi);
+    }//GEN-LAST:event_TSuhuKeyPressed
+
+    private void TTinggiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TTinggiKeyPressed
+        Valid.pindah(evt,TSuhu,TBerat);
+    }//GEN-LAST:event_TTinggiKeyPressed
+
+    private void TBeratKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TBeratKeyPressed
+        Valid.pindah(evt,TTinggi,TTensi);
+    }//GEN-LAST:event_TBeratKeyPressed
+
+    private void TTensiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TTensiKeyPressed
+        Valid.pindah(evt,TBerat,TRespirasi);
+    }//GEN-LAST:event_TTensiKeyPressed
+
+    private void TRespirasiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TRespirasiKeyPressed
+        Valid.pindah(evt,TTensi,TNadi);
+    }//GEN-LAST:event_TRespirasiKeyPressed
+
+    private void TNadiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TNadiKeyPressed
+        Valid.pindah(evt,TRespirasi,SpO2);
+    }//GEN-LAST:event_TNadiKeyPressed
+
+    private void SpO2KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SpO2KeyPressed
+        Valid.pindah(evt,TNadi,TGCS);
+    }//GEN-LAST:event_SpO2KeyPressed
+
+    private void TGCSKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TGCSKeyPressed
+        Valid.pindah(evt,TNadi,cmbKesadaran);
+    }//GEN-LAST:event_TGCSKeyPressed
+
+    private void cmbKesadaranKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_cmbKesadaranKeyPressed
+        Valid.pindah(evt,TGCS,LingkarPerut);
+    }//GEN-LAST:event_cmbKesadaranKeyPressed
+
+    private void LingkarPerutKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_LingkarPerutKeyPressed
+        Valid.pindah(evt,cmbKesadaran,TAlergi);
+    }//GEN-LAST:event_LingkarPerutKeyPressed
+
+    private void TAlergiKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TAlergiKeyPressed
+        Valid.pindah(evt,LingkarPerut,TPenilaian);
+    }//GEN-LAST:event_TAlergiKeyPressed
 
     /**
      * @param args the command line arguments
@@ -546,34 +930,84 @@ public final class ERMrspw extends javax.swing.JFrame {
     private widget.CekBox ChkIcd;
     private widget.CekBox ChkObt;
     private widget.CekBox ChkSoap;
+    private widget.CekBox ChkSoap1;
     private widget.Tanggal DTPTgl;
     private widget.TextBox KdDok;
+    private widget.TextBox LingkarPerut;
     private javax.swing.JPanel PanelICD;
     private javax.swing.JPanel PanelInput;
     private javax.swing.JPanel PanelObt;
+    private usu.widget.glass.PanelGlass PanelWall;
     private widget.ScrollPane ScrolIcd;
     private widget.ScrollPane ScrolObt;
     private widget.ScrollPane ScrolSoap;
+    private widget.TextBox SpO2;
+    private widget.TextBox TAlergi;
+    private widget.TextBox TAsuransi;
+    private widget.TextBox TBerat;
     private widget.TextBox TDokter;
+    private widget.TextArea TEvaluasi;
+    private widget.TextBox TGCS;
+    private widget.TextArea TInstruksi;
     private widget.TextBox TJabatan;
     private widget.TextBox TJk;
+    private widget.TextArea TKeluhan;
+    private widget.TextBox TNadi;
     private widget.TextBox TNoRM;
     private widget.TextBox TNoRw;
     private widget.TextBox TPasien;
+    private widget.TextArea TPemeriksaan;
+    private widget.TextArea TPenilaian;
+    private widget.TextBox TPoli;
+    private widget.TextBox TRespirasi;
+    private widget.TextBox TSuhu;
+    private widget.TextBox TTensi;
+    private widget.TextBox TTglLhr;
+    private widget.TextBox TTinggi;
+    private widget.TextBox TUmur;
+    private widget.TextArea TindakLanjut;
+    private widget.Button button1;
     private widget.ComboBox cmbDtk;
     private widget.ComboBox cmbJam;
+    private widget.ComboBox cmbKesadaran;
     private widget.ComboBox cmbMnt;
     private widget.InternalFrame internalFrame1;
     private widget.InternalFrame internalFrame2;
     private widget.InternalFrame internalFrame3;
     private widget.InternalFrame internalFrame4;
+    private widget.InternalFrame internalFrame5;
+    private widget.Label jLabel15;
+    private widget.Label jLabel16;
+    private widget.Label jLabel17;
+    private widget.Label jLabel18;
+    private widget.Label jLabel20;
+    private widget.Label jLabel22;
+    private widget.Label jLabel25;
+    private widget.Label jLabel29;
+    private widget.Label jLabel4;
+    private widget.Label jLabel54;
+    private widget.Label jLabel7;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private widget.Label label1;
     private widget.Label label10;
+    private widget.Label label11;
     private widget.Label label12;
     private widget.Label label13;
     private widget.Label label14;
     private widget.Label label15;
     private widget.Label label16;
+    private widget.Label label17;
+    private widget.Label label18;
+    private widget.Label label19;
+    private widget.Label label2;
+    private widget.Label label20;
+    private widget.Label label21;
     private widget.Label label3;
     private widget.Label label4;
     private widget.Label label5;
@@ -585,24 +1019,25 @@ public final class ERMrspw extends javax.swing.JFrame {
     private widget.PanelBiasa panelBiasa2;
     private widget.PanelBiasa panelBiasa3;
     private widget.PanelBiasa panelBiasa4;
+    private widget.panelisi panelisi1;
     private widget.Table table1;
     private widget.Table table2;
     private widget.Table table3;
     private widget.TextBox textBox1;
-    private widget.TextBox textBox11;
-    private widget.TextBox textBox12;
-    private widget.TextBox textBox2;
-    private widget.TextBox textBox6;
     // End of variables declaration//GEN-END:variables
 
     private void isRawat() {
         Sequel.cariIsi("select reg_periksa.no_rkm_medis from reg_periksa where reg_periksa.no_rawat=? ", TNoRM, TNoRw.getText());
+        Sequel.cariIsi("SELECT pj.png_jawab FROM reg_periksa rp INNER JOIN penjab pj ON pj.kd_pj = rp.kd_pj WHERE rp.no_rawat=?", TAsuransi, TNoRw.getText());
         //TCariPasien.setText(TNoRM.getText());
     }
 
     private void isPsien() {
         Sequel.cariIsi("select pasien.nm_pasien from pasien where pasien.no_rkm_medis=? ", TPasien, TNoRM.getText());
         Sequel.cariIsi("select if(pasien.jk = 'L', 'LAKI-LAKI','PEREMPUAN') from pasien where pasien.no_rkm_medis=? ", TJk, TNoRM.getText());
+        Sequel.cariIsi("select pasien.umur from pasien where pasien.no_rkm_medis=? ", TUmur, TNoRM.getText());
+        Sequel.cariIsi("select pasien.tgl_lahir from pasien where pasien.no_rkm_medis=? ", TTglLhr, TNoRM.getText());        
+        
     }
 
     public void setNoRm(String norwt, Date tgl1, Date tgl2) {
@@ -639,6 +1074,7 @@ public final class ERMrspw extends javax.swing.JFrame {
 
     public void SetPoli(String KodePoli) {
         this.kode_poli = KodePoli;
+        Sequel.cariIsi("SELECT poliklinik.nm_poli from poliklinik WHERE poliklinik.kd_poli=?", TPoli, KodePoli);
     }
 
     public void SetPj(String KodePj) {
