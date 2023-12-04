@@ -62,7 +62,8 @@ public final class ERMrspw extends javax.swing.JFrame {
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         
         int m_lebar = internalFrame1.getWidth(); //lebar 100%
-        double side = (m_lebar*0.3)/2;
+        double center = (m_lebar-(m_lebar*0.74));
+        double side = (m_lebar-center)/2;
         System.out.println(m_lebar);
         System.out.println((int)side);
         panelBiasa3.setPreferredSize(new Dimension((int)Math.round(side),HEIGHT));
@@ -207,7 +208,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         internalFrame1.setBorder(javax.swing.BorderFactory.createTitledBorder("ERM-Rumah Sakit Putra Waspada"));
         internalFrame1.setLayout(new java.awt.BorderLayout());
 
-        panelBiasa1.setPreferredSize(new java.awt.Dimension(1355, 150));
+        panelBiasa1.setPreferredSize(new java.awt.Dimension(1355, 130));
         panelBiasa1.setLayout(null);
         panelBiasa1.add(TAsuransi);
         TAsuransi.setBounds(590, 100, 180, 24);
@@ -255,7 +256,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         cmbDtk.setBounds(1690, 10, 62, 23);
 
         DTPTgl.setForeground(new java.awt.Color(50, 70, 50));
-        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "27-11-2023" }));
+        DTPTgl.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "28-11-2023" }));
         DTPTgl.setDisplayFormat("dd-MM-yyyy");
         DTPTgl.setOpaque(false);
         DTPTgl.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -506,7 +507,7 @@ public final class ERMrspw extends javax.swing.JFrame {
                 .addComponent(internalFrame3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(internalFrame4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 499, Short.MAX_VALUE))
+                .addGap(0, 475, Short.MAX_VALUE))
         );
 
         internalFrame1.add(panelBiasa3, java.awt.BorderLayout.WEST);
@@ -521,7 +522,7 @@ public final class ERMrspw extends javax.swing.JFrame {
         );
         panelBiasa4Layout.setVerticalGroup(
             panelBiasa4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 586, Short.MAX_VALUE)
+            .addGap(0, 562, Short.MAX_VALUE)
         );
 
         internalFrame1.add(panelBiasa4, java.awt.BorderLayout.LINE_END);
@@ -800,7 +801,7 @@ public final class ERMrspw extends javax.swing.JFrame {
             panelBiasa2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelBiasa2Layout.createSequentialGroup()
                 .addComponent(internalFrame5, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 77, Short.MAX_VALUE))
+                .addGap(0, 53, Short.MAX_VALUE))
         );
 
         internalFrame1.add(panelBiasa2, java.awt.BorderLayout.CENTER);
