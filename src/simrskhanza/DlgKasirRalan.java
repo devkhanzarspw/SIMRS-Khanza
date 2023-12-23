@@ -7876,6 +7876,7 @@ private void MnDataRalanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
           ermrspw.SetPj(tbKasirRalan.getValueAt(tbKasirRalan.getSelectedRow(),17).toString());
           ermrspw.setNoRm(TNoRw.getText(),DTPCari1.getDate(),DTPCari2.getDate());
           ermrspw.setVisible(true);
+          ermrspw.setVisible(true);
 }//GEN-LAST:event_MnDataRalanActionPerformed
 
 private void TotalObatKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TotalObatKeyPressed
