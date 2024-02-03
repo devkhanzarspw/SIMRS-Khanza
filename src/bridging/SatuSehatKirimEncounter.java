@@ -580,7 +580,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                         headers.add("Authorization", "Bearer "+api.TokenSatuSehat());
                         json = "{" +
                                     "\"resourceType\": \"Encounter\"," +
-                                    "\"status\": \"finished\"," +
+                                    "\"status\": \"arrived\"," +
                                     "\"class\": {" +
                                         "\"system\": \"http://terminology.hl7.org/CodeSystem/v3-ActCode\"," +
                                         "\"code\": \""+(tbObat.getValueAt(i,13).toString().equals("Ralan")?"AMB":"IMP")+"\"," +
@@ -622,7 +622,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                                     "]," +
                                     "\"statusHistory\": [" +
                                         "{" +
-                                            "\"status\": \"finished\"," +
+                                            "\"status\": \"arrived\"," +
                                             "\"period\": {" +
                                                 "\"start\": \""+tbObat.getValueAt(i,1).toString()+"\"," +
                                                 "\"end\": \""+tbObat.getValueAt(i,14).toString()+"\"" +
@@ -647,9 +647,11 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                         root = mapper.readTree(json);
                         response = root.path("id");
                         if(!response.asText().equals("")){
-                            Sequel.menyimpan("satu_sehat_encounter","?,?","No.Rawat",2,new String[]{
+                            if(Sequel.menyimpantf2("satu_sehat_encounter","?,?","No.Rawat",2,new String[]{
                                 tbObat.getValueAt(i,2).toString(),response.asText()
-                            });
+                            })==true){
+                                tbObat.setValueAt(response.asText(),i,15);
+                            }
                         }
                     }catch(Exception e){
                         System.out.println("Notifikasi Bridging : "+e);
@@ -659,7 +661,6 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                 }
             }
         }
-        tampil();
     }//GEN-LAST:event_BtnKirimActionPerformed
 
     private void ppPilihSemuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppPilihSemuaActionPerformed
@@ -693,7 +694,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                                             "\"value\": \""+tbObat.getValueAt(i,2).toString()+"\"" +
                                         "}" +
                                     "]," +
-                                    "\"status\": \"finished\"," +
+                                    "\"status\": \"arrived\"," +
                                     "\"class\": {" +
                                         "\"system\": \"http://terminology.hl7.org/CodeSystem/v3-ActCode\"," +
                                         "\"code\": \""+(tbObat.getValueAt(i,11).toString().equals("Ralan")?"AMB":"IMP")+"\"," +
@@ -735,7 +736,7 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                                     "]," +
                                     "\"statusHistory\": [" +
                                         "{" +
-                                            "\"status\": \"finished\"," +
+                                            "\"status\": \"arrived\"," +
                                             "\"period\": {" +
                                                 "\"start\": \""+tbObat.getValueAt(i,1).toString()+"\"," +
                                                 "\"end\": \""+tbObat.getValueAt(i,14).toString()+"\"" +
@@ -759,7 +760,6 @@ public final class SatuSehatKirimEncounter extends javax.swing.JDialog {
                 }
             }
         }
-        tampil();
     }//GEN-LAST:event_BtnUpdateActionPerformed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
