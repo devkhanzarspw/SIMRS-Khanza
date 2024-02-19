@@ -619,6 +619,10 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
                                         "\"reference\": \"Practitioner/"+iddokter+"\"," +
                                         "\"display\": \""+tbObat.getValueAt(i,6).toString()+"\"" +
                                     "}," +
+                                    "\"performer\": [{" +
+                                        "\"reference\": \"Organization/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                        "\"display\": \"Ruang Radiologi/Petugas Radiologi\"" +
+                                    "}]," +
                                     "\"reasonCode\": [" +
                                         "{" +
                                             "\"text\": \""+tbObat.getValueAt(i,11).toString()+"\"" +
@@ -705,6 +709,10 @@ public final class SatuSehatKirimServiceRequestRadiologi extends javax.swing.JDi
                                         "\"reference\": \"Practitioner/"+iddokter+"\"," +
                                         "\"display\": \""+tbObat.getValueAt(i,6).toString()+"\"" +
                                     "}," +
+                                    "\"performer\": [{" +
+                                        "\"reference\": \"Organization/"+koneksiDB.IDSATUSEHAT()+"\"," +
+                                        "\"display\": \"Ruang Radiologi/Petugas Radiologi\"" +
+                                    "}]," +
                                     "\"reasonCode\": [" +
                                         "{" +
                                             "\"text\": \""+tbObat.getValueAt(i,11).toString()+"\"" +
