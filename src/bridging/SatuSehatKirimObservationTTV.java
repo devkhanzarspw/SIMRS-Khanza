@@ -745,19 +745,19 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                 @Override
                 public void insertUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampilsuhu();
+                        TabRawatMouseClicked(null);
                     }
                 }
                 @Override
                 public void removeUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampilsuhu();
+                        TabRawatMouseClicked(null);
                     }
                 }
                 @Override
                 public void changedUpdate(DocumentEvent e) {
                     if(TCari.getText().length()>2){
-                        tampilsuhu();
+                        TabRawatMouseClicked(null);
                     }
                 }
             });
@@ -2145,9 +2145,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvsuhu","?,?,?,?,?","Observation Suhu",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvsuhu","?,?,?,?,?","Observation Suhu",5,new String[]{
                                     tbSuhu.getValueAt(i,2).toString(),tbSuhu.getValueAt(i,13).toString(),tbSuhu.getValueAt(i,14).toString(),tbSuhu.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbSuhu.setValueAt(response.asText(),i,15);
+                                    tbSuhu.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2157,7 +2160,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilsuhu();
         }else if(TabRawat.getSelectedIndex()==1){
             for(i=0;i<tbRespirasi.getRowCount();i++){
                 if(tbRespirasi.getValueAt(i,0).toString().equals("true")&&(!tbRespirasi.getValueAt(i,5).toString().equals(""))&&(!tbRespirasi.getValueAt(i,12).toString().equals(""))&&tbRespirasi.getValueAt(i,15).toString().equals("")){
@@ -2219,9 +2221,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvrespirasi","?,?,?,?,?","Observation Respirasi",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvrespirasi","?,?,?,?,?","Observation Respirasi",5,new String[]{
                                     tbRespirasi.getValueAt(i,2).toString(),tbRespirasi.getValueAt(i,13).toString(),tbRespirasi.getValueAt(i,14).toString(),tbRespirasi.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbRespirasi.setValueAt(response.asText(),i,15);
+                                    tbRespirasi.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2231,7 +2236,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilrespirasi();
         }else if(TabRawat.getSelectedIndex()==2){
             for(i=0;i<tbNadi.getRowCount();i++){
                 if(tbNadi.getValueAt(i,0).toString().equals("true")&&(!tbNadi.getValueAt(i,5).toString().equals(""))&&(!tbNadi.getValueAt(i,12).toString().equals(""))&&tbNadi.getValueAt(i,15).toString().equals("")){
@@ -2293,9 +2297,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvnadi","?,?,?,?,?","Observation Nadi",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvnadi","?,?,?,?,?","Observation Nadi",5,new String[]{
                                     tbNadi.getValueAt(i,2).toString(),tbNadi.getValueAt(i,13).toString(),tbNadi.getValueAt(i,14).toString(),tbNadi.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbNadi.setValueAt(response.asText(),i,15);
+                                    tbNadi.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2305,7 +2312,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilnadi();
         }else if(TabRawat.getSelectedIndex()==3){
             for(i=0;i<tbSpO2.getRowCount();i++){
                 if(tbSpO2.getValueAt(i,0).toString().equals("true")&&(!tbSpO2.getValueAt(i,5).toString().equals(""))&&(!tbSpO2.getValueAt(i,12).toString().equals(""))&&tbSpO2.getValueAt(i,15).toString().equals("")){
@@ -2367,9 +2373,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvspo2","?,?,?,?,?","Observation SpO2",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvspo2","?,?,?,?,?","Observation SpO2",5,new String[]{
                                     tbSpO2.getValueAt(i,2).toString(),tbSpO2.getValueAt(i,13).toString(),tbSpO2.getValueAt(i,14).toString(),tbSpO2.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbSpO2.setValueAt(response.asText(),i,15);
+                                    tbSpO2.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2379,7 +2388,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilspo2();
         }else if(TabRawat.getSelectedIndex()==4){
             for(i=0;i<tbGCS.getRowCount();i++){
                 if(tbGCS.getValueAt(i,0).toString().equals("true")&&(!tbGCS.getValueAt(i,5).toString().equals(""))&&(!tbGCS.getValueAt(i,12).toString().equals(""))&&tbGCS.getValueAt(i,15).toString().equals("")){
@@ -2440,9 +2448,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvgcs","?,?,?,?,?","Observation GCS",5,new String[]{
+                                if(Sequel.menyimpantf("satu_sehat_observationttvgcs","?,?,?,?,?","Observation GCS",5,new String[]{
                                     tbGCS.getValueAt(i,2).toString(),tbGCS.getValueAt(i,13).toString(),tbGCS.getValueAt(i,14).toString(),tbGCS.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbGCS.setValueAt(response.asText(),i,15);
+                                    tbGCS.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2452,7 +2463,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilgcs();
         }else if(TabRawat.getSelectedIndex()==5){
             for(i=0;i<tbKesadaran.getRowCount();i++){
                 if(tbKesadaran.getValueAt(i,0).toString().equals("true")&&(!tbKesadaran.getValueAt(i,5).toString().equals(""))&&(!tbKesadaran.getValueAt(i,12).toString().equals(""))&&tbKesadaran.getValueAt(i,15).toString().equals("")){
@@ -2511,9 +2521,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvkesadaran","?,?,?,?,?","Observation Kesadaran",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvkesadaran","?,?,?,?,?","Observation Kesadaran",5,new String[]{
                                     tbKesadaran.getValueAt(i,2).toString(),tbKesadaran.getValueAt(i,13).toString(),tbKesadaran.getValueAt(i,14).toString(),tbKesadaran.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbKesadaran.setValueAt(response.asText(),i,15);
+                                    tbKesadaran.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2523,7 +2536,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilkesadaran();
         }else if(TabRawat.getSelectedIndex()==6){
             for(i=0;i<tbTensi.getRowCount();i++){
                 if(tbTensi.getValueAt(i,0).toString().equals("true")&&(!tbTensi.getValueAt(i,5).toString().equals(""))&&(!tbTensi.getValueAt(i,12).toString().equals(""))&&tbTensi.getValueAt(i,15).toString().equals("")){
@@ -2633,9 +2645,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvtensi","?,?,?,?,?","Observation Tensi",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvtensi","?,?,?,?,?","Observation Tensi",5,new String[]{
                                     tbTensi.getValueAt(i,2).toString(),tbTensi.getValueAt(i,13).toString(),tbTensi.getValueAt(i,14).toString(),tbTensi.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbTensi.setValueAt(response.asText(),i,15);
+                                    tbTensi.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2645,7 +2660,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampiltensi();
         }else if(TabRawat.getSelectedIndex()==7){
             for(i=0;i<tbTB.getRowCount();i++){
                 if(tbTB.getValueAt(i,0).toString().equals("true")&&(!tbTB.getValueAt(i,5).toString().equals(""))&&(!tbTB.getValueAt(i,12).toString().equals(""))&&tbTB.getValueAt(i,15).toString().equals("")){
@@ -2707,9 +2721,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvtb","?,?,?,?,?","Observation TB",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvtb","?,?,?,?,?","Observation TB",5,new String[]{
                                     tbTB.getValueAt(i,2).toString(),tbTB.getValueAt(i,13).toString(),tbTB.getValueAt(i,14).toString(),tbTB.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbTB.setValueAt(response.asText(),i,15);
+                                    tbTB.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2719,7 +2736,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampiltb();
         }else if(TabRawat.getSelectedIndex()==8){
             for(i=0;i<tbBB.getRowCount();i++){
                 if(tbBB.getValueAt(i,0).toString().equals("true")&&(!tbBB.getValueAt(i,5).toString().equals(""))&&(!tbBB.getValueAt(i,12).toString().equals(""))&&tbBB.getValueAt(i,15).toString().equals("")){
@@ -2781,9 +2797,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvbb","?,?,?,?,?","Observation BB",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvbb","?,?,?,?,?","Observation BB",5,new String[]{
                                     tbBB.getValueAt(i,2).toString(),tbBB.getValueAt(i,13).toString(),tbBB.getValueAt(i,14).toString(),tbBB.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbBB.setValueAt(response.asText(),i,15);
+                                    tbBB.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2793,7 +2812,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilbb();
         }else if(TabRawat.getSelectedIndex()==9){
             for(i=0;i<tbLP.getRowCount();i++){
                 if(tbLP.getValueAt(i,0).toString().equals("true")&&(!tbLP.getValueAt(i,5).toString().equals(""))&&(!tbLP.getValueAt(i,12).toString().equals(""))&&tbLP.getValueAt(i,15).toString().equals("")){
@@ -2855,9 +2873,12 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             root = mapper.readTree(json);
                             response = root.path("id");
                             if(!response.asText().equals("")){
-                                Sequel.menyimpan("satu_sehat_observationttvlp","?,?,?,?,?","Observation LP",5,new String[]{
+                                if(Sequel.menyimpantf2("satu_sehat_observationttvlp","?,?,?,?,?","Observation LP",5,new String[]{
                                     tbLP.getValueAt(i,2).toString(),tbLP.getValueAt(i,13).toString(),tbLP.getValueAt(i,14).toString(),tbLP.getValueAt(i,7).toString(),response.asText()
-                                });
+                                })==true){
+                                    tbLP.setValueAt(response.asText(),i,15);
+                                    tbLP.setValueAt(false,i,0);
+                                }
                             }
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
@@ -2867,7 +2888,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampillp();
         }
     }//GEN-LAST:event_BtnKirimActionPerformed
 
@@ -3025,6 +3045,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbSuhu.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbSuhu.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3033,7 +3054,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilsuhu();
         }else if(TabRawat.getSelectedIndex()==1){
             for(i=0;i<tbRespirasi.getRowCount();i++){
                 if(tbRespirasi.getValueAt(i,0).toString().equals("true")&&(!tbRespirasi.getValueAt(i,5).toString().equals(""))&&(!tbRespirasi.getValueAt(i,12).toString().equals(""))&&(!tbRespirasi.getValueAt(i,15).toString().equals(""))){
@@ -3093,6 +3113,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbRespirasi.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbRespirasi.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3101,7 +3122,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilrespirasi();
         }else if(TabRawat.getSelectedIndex()==2){
             for(i=0;i<tbNadi.getRowCount();i++){
                 if(tbNadi.getValueAt(i,0).toString().equals("true")&&(!tbNadi.getValueAt(i,5).toString().equals(""))&&(!tbNadi.getValueAt(i,12).toString().equals(""))&&(!tbNadi.getValueAt(i,15).toString().equals(""))){
@@ -3161,6 +3181,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbNadi.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbNadi.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3169,7 +3190,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilnadi();
         }else if(TabRawat.getSelectedIndex()==3){
             for(i=0;i<tbSpO2.getRowCount();i++){
                 if(tbSpO2.getValueAt(i,0).toString().equals("true")&&(!tbSpO2.getValueAt(i,5).toString().equals(""))&&(!tbSpO2.getValueAt(i,12).toString().equals(""))&&(!tbSpO2.getValueAt(i,15).toString().equals(""))){
@@ -3229,6 +3249,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbSpO2.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbSpO2.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3237,7 +3258,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilspo2();
         }else if(TabRawat.getSelectedIndex()==4){
             for(i=0;i<tbGCS.getRowCount();i++){
                 if(tbGCS.getValueAt(i,0).toString().equals("true")&&(!tbGCS.getValueAt(i,5).toString().equals(""))&&(!tbGCS.getValueAt(i,12).toString().equals(""))&&(!tbGCS.getValueAt(i,15).toString().equals(""))){
@@ -3296,6 +3316,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbGCS.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbGCS.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3304,7 +3325,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilgcs();
         }else if(TabRawat.getSelectedIndex()==5){
             for(i=0;i<tbKesadaran.getRowCount();i++){
                 if(tbKesadaran.getValueAt(i,0).toString().equals("true")&&(!tbKesadaran.getValueAt(i,5).toString().equals(""))&&(!tbKesadaran.getValueAt(i,12).toString().equals(""))&&(!tbKesadaran.getValueAt(i,15).toString().equals(""))){
@@ -3361,6 +3381,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbKesadaran.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbKesadaran.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3369,7 +3390,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilkesadaran();
         }else if(TabRawat.getSelectedIndex()==6){
             for(i=0;i<tbTensi.getRowCount();i++){
                 if(tbTensi.getValueAt(i,0).toString().equals("true")&&(!tbTensi.getValueAt(i,5).toString().equals(""))&&(!tbTensi.getValueAt(i,12).toString().equals(""))&&(!tbTensi.getValueAt(i,15).toString().equals(""))){
@@ -3460,6 +3480,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbTensi.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbTensi.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3468,7 +3489,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampiltensi();
         }else if(TabRawat.getSelectedIndex()==7){
             for(i=0;i<tbTB.getRowCount();i++){
                 if(tbTB.getValueAt(i,0).toString().equals("true")&&(!tbTB.getValueAt(i,5).toString().equals(""))&&(!tbTB.getValueAt(i,12).toString().equals(""))&&(!tbTB.getValueAt(i,15).toString().equals(""))){
@@ -3528,6 +3548,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbTB.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbTB.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3536,7 +3557,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampiltb();
         }else if(TabRawat.getSelectedIndex()==8){
             for(i=0;i<tbBB.getRowCount();i++){
                 if(tbBB.getValueAt(i,0).toString().equals("true")&&(!tbBB.getValueAt(i,5).toString().equals(""))&&(!tbBB.getValueAt(i,12).toString().equals(""))&&(!tbBB.getValueAt(i,15).toString().equals(""))){
@@ -3596,6 +3616,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbBB.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbBB.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3604,7 +3625,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampilbb();
         }else if(TabRawat.getSelectedIndex()==9){
             for(i=0;i<tbLP.getRowCount();i++){
                 if(tbLP.getValueAt(i,0).toString().equals("true")&&(!tbLP.getValueAt(i,5).toString().equals(""))&&(!tbLP.getValueAt(i,12).toString().equals(""))&&(!tbLP.getValueAt(i,15).toString().equals(""))){
@@ -3664,6 +3684,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                             requestEntity = new HttpEntity(json,headers);
                             json=api.getRest().exchange(link+"/Observation/"+tbLP.getValueAt(i,15).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                             System.out.println("Result JSON : "+json);
+                            tbLP.setValueAt(false,i,0);
                         }catch(Exception e){
                             System.out.println("Notifikasi Bridging : "+e);
                         }
@@ -3672,7 +3693,6 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
                     }
                 }
             }
-            tampillp();
         }
     }//GEN-LAST:event_BtnUpdateActionPerformed
 
@@ -3721,7 +3741,7 @@ public final class SatuSehatKirimObservationTTV extends javax.swing.JDialog {
     private void BtnAll1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_BtnAll1KeyPressed
         if(evt.getKeyCode()==KeyEvent.VK_SPACE){
             TCari.setText("");
-            tampilsuhu();
+            TabRawatMouseClicked(null);
         }else{
             Valid.pindah(evt, BtnPrint, BtnKeluar);
         }

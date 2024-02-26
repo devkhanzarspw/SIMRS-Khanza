@@ -606,9 +606,12 @@ public final class SatuSehatKirimProcedure extends javax.swing.JDialog {
                         root = mapper.readTree(json);
                         response = root.path("id");
                         if(!response.asText().equals("")){
-                            Sequel.menyimpan("satu_sehat_procedure","?,?,?,?","Prosedur",4,new String[]{
+                            if(Sequel.menyimpantf2("satu_sehat_procedure","?,?,?,?","Prosedur",4,new String[]{
                                 tbObat.getValueAt(i,2).toString(),tbObat.getValueAt(i,10).toString(),tbObat.getValueAt(i,7).toString(),response.asText()
-                            });
+                            })==true){
+                                tbObat.setValueAt(response.asText(),i,12);
+                                tbObat.setValueAt(false,i,0);
+                            }
                         }
                     }catch(Exception e){
                         System.out.println("Notifikasi Bridging : "+e);
@@ -618,7 +621,6 @@ public final class SatuSehatKirimProcedure extends javax.swing.JDialog {
                 }
             }
         }
-        tampil();
     }//GEN-LAST:event_BtnKirimActionPerformed
 
     private void ppPilihSemuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ppPilihSemuaActionPerformed
@@ -683,6 +685,7 @@ public final class SatuSehatKirimProcedure extends javax.swing.JDialog {
                         requestEntity = new HttpEntity(json,headers);
                         json=api.getRest().exchange(link+"/Procedure/"+tbObat.getValueAt(i,12).toString(), HttpMethod.PUT, requestEntity, String.class).getBody();
                         System.out.println("Result JSON : "+json);
+                        tbObat.setValueAt(false,i,0);
                     }catch(Exception e){
                         System.out.println("Notifikasi Bridging : "+e);
                     }
@@ -691,7 +694,6 @@ public final class SatuSehatKirimProcedure extends javax.swing.JDialog {
                 }
             }
         }
-        tampil();
     }//GEN-LAST:event_BtnUpdateActionPerformed
 
     private void BtnAllActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAllActionPerformed
